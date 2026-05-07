@@ -1,0 +1,78 @@
+Overview
+TheNeverEndingPrompt is a collaborative, infinite art chain platform where users start with a single surreal prompt and image, then continuously modify the prompt, generate a new image, and pass it to the next person.
+It’s part creative playground, part social experiment, and part viral art gallery — turning one prompt into an ever-evolving visual story.
+Tagline:
+One prompt. Endless transformations.
+Core Concept
+
+A single “chain” begins with a starting prompt + image.
+Every participant can edit the prompt (add, remove, twist elements), generate a new image, and submit their version.
+The newest version becomes the starting point for the next person.
+All previous versions are saved in a public timeline/gallery.
+
+Key Features
+
+Active Chain View
+Large display of the current prompt and latest image.
+One-click “Modify This Prompt” button.
+
+Prompt Editor
+Side-by-side view: Previous prompt vs. Your new prompt.
+AI-assisted prompt suggestions (optional).
+Character/image reference lock options (e.g. “keep the woman with colorful hair”).
+
+Image Generation
+Integrated Flux (or SD3.5 / Aurora) generation.
+Optional style consistency tools (LoRA, seed inheritance, image-to-image strength slider).
+
+Chain History
+Scrollable timeline showing every version with prompt + image + creator name.
+
+Community
+Multiple public chains running in parallel.
+“Start New Chain” button.
+Like / Comment / Share individual versions.
+Leaderboards: Most Creative Twist, Longest Chain, etc.
+
+Extras
+Anonymous or logged-in mode (Discord/GitHub login).
+Download full chain as GIF/video.
+“Remix” button on any past version.
+
+
+User Flow (Simple)
+
+Land on homepage → See featured/active chains.
+Click a chain → View current image + prompt.
+Click “Continue the Chain”.
+Edit prompt → Generate image → Preview.
+Submit → Your version becomes the new current image.
+
+Target Audience
+
+AI art enthusiasts
+Surreal / conceptual artists
+Prompt engineers
+Casual creatives who love collaborative projects
+
+Suggested Tech Stack (VS Code + Claude friendly)
+
+Frontend: Next.js 15 (App Router) + Tailwind + shadcn/ui
+Backend: Next.js API routes
+Database: Supabase (PostgreSQL + Storage for images)
+Auth: Supabase Auth or NextAuth
+AI Generation:
+ComfyUI API (self-hosted) – best quality
+Or Fal.ai / Replicate Flux API (easier start)
+
+Deployment: Vercel (frontend) + Railway / Render (ComfyUI)
+
+
+Would you like me to also write:
+
+A more detailed feature spec?
+The homepage copy / UI text?
+Database schema?
+Initial Next.js project structure?
+
+Just say the word and I’ll generate whatever you need to kick off building it with Claude. This concept is clean, fun, and highly shareable — it has strong viral potential. 🚀
