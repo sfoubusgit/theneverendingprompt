@@ -78,11 +78,9 @@ export default async function Home() {
         </section>
 
         {/* How it works */}
-        <div className="relative mb-12">
+        <div className="mb-12">
+          <p className="text-xs tracking-widest text-zinc-400 uppercase mb-3">The Never Ending Prompt</p>
           <img src="/graph.png" alt="How it works" className="w-full opacity-70" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-xs tracking-widest text-zinc-400 uppercase">The Never Ending Prompt</p>
-          </div>
         </div>
 
         {/* Past rounds */}
