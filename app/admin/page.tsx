@@ -106,6 +106,23 @@ export default function AdminPage() {
     setLoading(false)
   }
 
+  async function resetAll() {
+    if (!confirm('Delete all rounds, submissions and votes?')) return
+    setLoading(true)
+    const res = await fetch('/api/admin/reset', { method: 'POST' })
+    const data = await res.json()
+    if (data.success) {
+      setRound(null)
+      setSubmissions([])
+      setWinner(null)
+      setNextPrompt('')
+      setMessage('All data reset.')
+    } else {
+      setMessage(data.error ?? 'Error resetting')
+    }
+    setLoading(false)
+  }
+
   const sorted = [...submissions].sort((a, b) => (b.vote_count ?? 0) - (a.vote_count ?? 0))
 
   return (
@@ -215,6 +232,16 @@ export default function AdminPage() {
             )}
           </>
         )}
+        <div className="mt-16 pt-8 border-t border-zinc-900">
+          <button
+            onClick={resetAll}
+            disabled={loading}
+            className="w-full bg-transparent border border-red-900 text-red-700 hover:text-red-400 hover:border-red-700 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-40"
+          >
+            Reset everything
+          </button>
+        </div>
+
       </div>
     </main>
   )
