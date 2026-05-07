@@ -80,7 +80,7 @@ export default async function Home() {
         {/* How it works */}
         <div className="mb-12 -mx-4 sm:-mx-16">
           <p className="text-xs tracking-widest text-zinc-400 uppercase mb-3 px-4 sm:px-16">The Never Ending Prompt</p>
-          <img src="/graph.png" alt="How it works" className="w-full max-h-64 object-contain opacity-70" />
+          <img src="/graph.png" alt="How it works" className="w-full max-h-96 object-contain opacity-70" />
         </div>
 
         {/* Past rounds */}
