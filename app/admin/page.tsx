@@ -5,6 +5,9 @@ import { supabase } from '@/lib/supabase'
 import { Round, Submission } from '@/types'
 
 export default function AdminPage() {
+  const [authed, setAuthed] = useState(false)
+  const [keyInput, setKeyInput] = useState('')
+  const [keyError, setKeyError] = useState(false)
   const [round, setRound] = useState<Round | null>(null)
   const [submissions, setSubmissions] = useState<Submission[]>([])
   const [winner, setWinner] = useState<Submission | null>(null)
@@ -14,7 +17,29 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
-  useEffect(() => { fetchCurrent() }, [])
+  useEffect(() => {
+    const stored = sessionStorage.getItem('admin_key')
+    if (stored) { setAuthed(true); fetchCurrent() }
+  }, [])
+
+  function adminFetch(url: string, options: RequestInit = {}) {
+    const key = sessionStorage.getItem('admin_key') ?? ''
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers as Record<string, string> ?? {}),
+        'Authorization': `Bearer ${key}`,
+      },
+    })
+  }
+
+  function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    sessionStorage.setItem('admin_key', keyInput)
+    setAuthed(true)
+    setKeyError(false)
+    fetchCurrent()
+  }
 
   async function fetchCurrent() {
     const { data: r } = await supabase
@@ -50,12 +75,13 @@ export default function AdminPage() {
   async function closeRound() {
     if (!round) return
     setLoading(true)
-    const res = await fetch('/api/admin/close-round', {
+    const res = await adminFetch('/api/admin/close-round', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ round_id: round.id }),
     })
     const data = await res.json()
+    if (res.status === 401) { setKeyError(true); setAuthed(false); setLoading(false); return }
     if (data.winner) {
       setWinner(data.winner)
       setNextPrompt(data.winner.prompt)
@@ -81,7 +107,6 @@ export default function AdminPage() {
     if (!nextPrompt.trim()) return
     setLoading(true)
 
-    // If there's an image for the current (just closed) round, upload it first
     if (imageFile && round?.status === 'closed') {
       const url = await uploadImage(round.id)
       if (url) {
@@ -89,12 +114,13 @@ export default function AdminPage() {
       }
     }
 
-    const res = await fetch('/api/admin/open-round', {
+    const res = await adminFetch('/api/admin/open-round', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: nextPrompt }),
     })
     const data = await res.json()
+    if (res.status === 401) { setKeyError(true); setAuthed(false); setLoading(false); return }
     if (data.id) {
       setMessage('New round opened.')
       setImageFile(null)
@@ -109,8 +135,9 @@ export default function AdminPage() {
   async function resetAll() {
     if (!confirm('Delete all rounds, submissions and votes?')) return
     setLoading(true)
-    const res = await fetch('/api/admin/reset', { method: 'POST' })
+    const res = await adminFetch('/api/admin/reset', { method: 'POST' })
     const data = await res.json()
+    if (res.status === 401) { setKeyError(true); setAuthed(false); setLoading(false); return }
     if (data.success) {
       setRound(null)
       setSubmissions([])
@@ -124,6 +151,34 @@ export default function AdminPage() {
   }
 
   const sorted = [...submissions].sort((a, b) => (b.vote_count ?? 0) - (a.vote_count ?? 0))
+
+  if (!authed) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <form onSubmit={handleLogin} className="w-full max-w-sm px-4">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">Admin access</p>
+          {keyError && (
+            <p className="text-red-400 text-xs mb-3">Wrong key. Try again.</p>
+          )}
+          <input
+            type="password"
+            value={keyInput}
+            onChange={e => setKeyInput(e.target.value)}
+            className="w-full bg-zinc-900 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-zinc-600 mb-3"
+            placeholder="Enter admin key"
+            autoFocus
+          />
+          <button
+            type="submit"
+            disabled={!keyInput.trim()}
+            className="w-full bg-white text-black font-semibold py-2.5 rounded-xl text-sm hover:bg-zinc-200 transition-colors disabled:opacity-40"
+          >
+            Enter
+          </button>
+        </form>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -232,6 +287,7 @@ export default function AdminPage() {
             )}
           </>
         )}
+
         <div className="mt-16 pt-8 border-t border-zinc-900">
           <button
             onClick={resetAll}

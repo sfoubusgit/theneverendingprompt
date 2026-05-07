@@ -1,7 +1,10 @@
 import { supabase } from '@/lib/supabase'
+import { isAuthorized } from '@/lib/adminAuth'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
+  if (!isAuthorized(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const { round_id } = await request.json()
 
   // Get all submissions with vote counts
