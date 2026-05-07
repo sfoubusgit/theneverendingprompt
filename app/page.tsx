@@ -64,6 +64,12 @@ export default async function Home() {
           </p>
         </section>
 
+        {/* How it works */}
+        <div className="mb-12 -mx-4 sm:-mx-16">
+          <p className="text-xs tracking-widest text-zinc-400 uppercase mb-3 px-4 sm:px-16">The Never Ending Prompt</p>
+          <img src="/graph.png" alt="How it works" className="w-full opacity-70" />
+        </div>
+
         {/* Submissions + voting */}
         <section className="mb-10 text-left">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4 text-center">
@@ -76,12 +82,6 @@ export default async function Home() {
             winnerId={round.winner_submission_id}
           />
         </section>
-
-        {/* How it works */}
-        <div className="mb-12 -mx-4 sm:-mx-16">
-          <p className="text-xs tracking-widest text-zinc-400 uppercase mb-3 px-4 sm:px-16">The Never Ending Prompt</p>
-          <img src="/graph.png" alt="How it works" className="w-full opacity-70" />
-        </div>
 
         {/* Past rounds */}
         {pastRounds && pastRounds.length > 0 && (
