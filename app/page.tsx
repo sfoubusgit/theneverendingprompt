@@ -64,11 +64,6 @@ export default async function Home() {
           </p>
         </section>
 
-        {/* How it works */}
-        <div className="mb-12">
-          <img src="/graph.png" alt="How it works" className="w-full max-w-lg mx-auto opacity-70" />
-        </div>
-
         {/* Submissions + voting */}
         <section className="mb-10 text-left">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4 text-center">
@@ -81,6 +76,11 @@ export default async function Home() {
             winnerId={round.winner_submission_id}
           />
         </section>
+
+        {/* How it works */}
+        <div className="mb-12">
+          <img src="/graph.png" alt="How it works" className="w-full opacity-70" />
+        </div>
 
         {/* Past rounds */}
         {pastRounds && pastRounds.length > 0 && (
