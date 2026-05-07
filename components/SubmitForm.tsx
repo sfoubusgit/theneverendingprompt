@@ -21,10 +21,16 @@ export default function SubmitForm({
     setLoading(true)
     setError(null)
 
+    let voter_id = localStorage.getItem('voter_id')
+    if (!voter_id) {
+      voter_id = crypto.randomUUID()
+      localStorage.setItem('voter_id', voter_id)
+    }
+
     const res = await fetch('/api/submissions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ round_id: roundId, prompt, submitter_name: name }),
+      body: JSON.stringify({ round_id: roundId, prompt, submitter_name: name, voter_id }),
     })
 
     const data = await res.json()

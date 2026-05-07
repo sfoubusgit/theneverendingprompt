@@ -2,9 +2,9 @@ import { supabase } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  const { round_id, prompt, submitter_name } = await request.json()
+  const { round_id, prompt, submitter_name, voter_id } = await request.json()
 
-  if (!round_id || !prompt?.trim() || !submitter_name?.trim()) {
+  if (!round_id || !prompt?.trim() || !submitter_name?.trim() || !voter_id) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
@@ -22,9 +22,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Round is closed' }, { status: 400 })
   }
 
+  const { data: existing } = await supabase
+    .from('submissions')
+    .select('id')
+    .eq('round_id', round_id)
+    .eq('voter_id', voter_id)
+    .single()
+
+  if (existing) {
+    return NextResponse.json({ error: 'You already submitted this round' }, { status: 400 })
+  }
+
   const { data, error } = await supabase
     .from('submissions')
-    .insert({ round_id, prompt: prompt.trim(), submitter_name: submitter_name.trim() })
+    .insert({ round_id, prompt: prompt.trim(), submitter_name: submitter_name.trim(), voter_id })
     .select()
     .single()
 
