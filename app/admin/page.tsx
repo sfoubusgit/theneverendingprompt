@@ -33,7 +33,7 @@ export default function AdminPage() {
     })
   }
 
-  function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  function handleLogin(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     sessionStorage.setItem('admin_key', keyInput)
     setAuthed(true)
@@ -183,7 +183,15 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="max-w-xl mx-auto px-4 py-12">
-        <h1 className="text-xl font-bold mb-8">Admin</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-xl font-bold">Admin</h1>
+          <button
+            onClick={() => { sessionStorage.removeItem('admin_key'); setAuthed(false) }}
+            className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
+            Log out
+          </button>
+        </div>
 
         {message && (
           <div className="mb-6 p-3 bg-zinc-800 rounded-lg text-sm text-zinc-300">{message}</div>
