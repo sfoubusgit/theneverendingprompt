@@ -81,7 +81,7 @@ export default async function Home() {
         <div className="relative mb-12">
           <img src="/graph.png" alt="How it works" className="w-full opacity-70" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <h2 className="text-2xl md:text-3xl font-serif text-white tracking-tight">The Never Ending Prompt</h2>
+            <p className="text-xs tracking-widest text-zinc-400 uppercase">The Never Ending Prompt</p>
           </div>
         </div>
 
@@ -109,10 +109,7 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Footer wordmark */}
-        <p className="text-xs tracking-widest text-zinc-800 uppercase">The Never Ending Prompt</p>
-
-      </div>
+</div>
     </main>
   )
 }
