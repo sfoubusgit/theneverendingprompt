@@ -33,11 +33,16 @@ export default function AdminPage() {
     })
   }
 
-  function handleLogin(e: React.SyntheticEvent<HTMLFormElement>) {
+  async function handleLogin(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
+    const res = await fetch('/api/admin/verify', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${keyInput}` },
+    })
+    if (res.status === 401) { setKeyError(true); return }
     sessionStorage.setItem('admin_key', keyInput)
-    setAuthed(true)
     setKeyError(false)
+    setAuthed(true)
     fetchCurrent()
   }
 
