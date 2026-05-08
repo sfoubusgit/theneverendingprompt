@@ -155,6 +155,36 @@ export default function AdminPage() {
     setLoading(false)
   }
 
+  async function downloadBackup() {
+    const key = sessionStorage.getItem('admin_key') ?? ''
+    const res = await fetch('/api/admin/backup', {
+      headers: { 'Authorization': `Bearer ${key}` },
+    })
+    if (res.status === 401) { setKeyError(true); setAuthed(false); return }
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `tnep-backup-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  async function clearHistory() {
+    if (!confirm('Delete all closed rounds and their history? The current open round is kept.')) return
+    setLoading(true)
+    const res = await adminFetch('/api/admin/clear-history', { method: 'POST' })
+    const data = await res.json()
+    if (res.status === 401) { setKeyError(true); setAuthed(false); setLoading(false); return }
+    if (data.success) {
+      setMessage(`History cleared (${data.deleted} round${data.deleted !== 1 ? 's' : ''} deleted).`)
+      fetchCurrent()
+    } else {
+      setMessage(data.error ?? 'Error clearing history')
+    }
+    setLoading(false)
+  }
+
   const sorted = [...submissions].sort((a, b) => (b.vote_count ?? 0) - (a.vote_count ?? 0))
 
   if (!authed) {
@@ -301,7 +331,21 @@ export default function AdminPage() {
           </>
         )}
 
-        <div className="mt-16 pt-8 border-t border-zinc-900">
+        <div className="mt-16 pt-8 border-t border-zinc-900 space-y-3">
+          <button
+            onClick={downloadBackup}
+            disabled={loading}
+            className="w-full bg-transparent border border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:border-zinc-500 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-40"
+          >
+            Download backup
+          </button>
+          <button
+            onClick={clearHistory}
+            disabled={loading}
+            className="w-full bg-transparent border border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:border-zinc-500 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-40"
+          >
+            Clear history
+          </button>
           <button
             onClick={resetAll}
             disabled={loading}
