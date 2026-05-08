@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { Submission } from '@/types'
 import RoundClient from '@/components/RoundClient'
 
-export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 async function getSubmissionsWithCounts(roundId: string): Promise<Submission[]> {
   const { data: subs } = await supabase
