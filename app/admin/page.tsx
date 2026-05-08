@@ -16,10 +16,11 @@ export default function AdminPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [stats, setStats] = useState<{ totalRounds: number; totalSubmissions: number; totalVotes: number; uniqueParticipants: number } | null>(null)
 
   useEffect(() => {
     const stored = sessionStorage.getItem('admin_key')
-    if (stored) { setAuthed(true); fetchCurrent() }
+    if (stored) { setAuthed(true); fetchCurrent(); fetchStats() }
   }, [])
 
   function adminFetch(url: string, options: RequestInit = {}) {
@@ -155,6 +156,11 @@ export default function AdminPage() {
     setLoading(false)
   }
 
+  async function fetchStats() {
+    const res = await adminFetch('/api/admin/stats')
+    if (res.ok) setStats(await res.json())
+  }
+
   async function downloadBackup() {
     const key = sessionStorage.getItem('admin_key') ?? ''
     const res = await fetch('/api/admin/backup', {
@@ -227,6 +233,22 @@ export default function AdminPage() {
             Log out
           </button>
         </div>
+
+        {stats && (
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            {[
+              { label: 'Rounds', value: stats.totalRounds },
+              { label: 'Submissions', value: stats.totalSubmissions },
+              { label: 'Votes', value: stats.totalVotes },
+              { label: 'Participants', value: stats.uniqueParticipants },
+            ].map(({ label, value }) => (
+              <div key={label} className="bg-zinc-900 rounded-xl p-4">
+                <p className="text-2xl font-bold">{value}</p>
+                <p className="text-xs text-zinc-500 mt-1">{label}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
         {message && (
           <div className="mb-6 p-3 bg-zinc-800 rounded-lg text-sm text-zinc-300">{message}</div>
