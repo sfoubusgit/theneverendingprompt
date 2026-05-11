@@ -16,7 +16,7 @@ export default function SubmitForm({
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError(null)
@@ -58,7 +58,7 @@ export default function SubmitForm({
     <form onSubmit={handleSubmit} className="space-y-3">
       <div>
         <div className="flex justify-between mb-1">
-          <label className="text-xs text-zinc-500">Your version</label>
+          <span />
           <span className={`text-xs ${prompt.length > 140 ? prompt.length >= 150 ? 'text-red-400' : 'text-yellow-500' : 'text-zinc-600'}`}>
             {prompt.length}/150
           </span>
