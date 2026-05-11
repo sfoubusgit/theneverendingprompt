@@ -34,9 +34,14 @@ export default function RoundClient({
       )}
       {submissions.length > 0 && (
         <div>
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
-            {closed ? 'Results' : 'What others suggested'}
-          </p>
+          <div className="mb-4">
+            <p className="text-xs text-zinc-500 uppercase tracking-widest">
+              {closed ? 'Results' : 'What others suggested'}
+            </p>
+            {!closed && (
+              <p className="text-xs text-zinc-600 mt-1">tap a prompt to vote for it</p>
+            )}
+          </div>
           <VoteSection
             submissions={submissions}
             roundId={roundId}
