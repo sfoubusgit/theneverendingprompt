@@ -83,15 +83,9 @@ export default async function Home() {
           />
         </section>
 
-        {/* How it works */}
-        <div className="mt-8 mb-16 -mx-4 sm:-mx-16">
-          <p className="text-xs tracking-widest text-zinc-400 uppercase mb-3 px-4 sm:px-16">The Never Ending Prompt</p>
-          <img src="/graph.png" alt="How it works" className="w-full max-h-96 object-contain opacity-70" />
-        </div>
-
         {/* Chain history */}
-        {(pastRounds && pastRounds.length > 0 || originRound) && (
-          <section className="mb-16 text-left">
+        {((pastRounds && pastRounds.length > 0) || originRound) && (
+          <section className="mb-12 text-left">
             <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4 text-center">Chain history</p>
             <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4">
               {(pastRounds ?? []).map((r: any) => {
@@ -114,7 +108,6 @@ export default async function Home() {
                   </div>
                 )
               })}
-
               {originRound && !(pastRounds ?? []).some((r: any) => r.id === originRound.id) && (
                 <div className="flex-shrink-0 w-40 bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
                   <p className="text-[10px] text-zinc-600 mb-1 uppercase tracking-widest">Origin</p>
@@ -126,6 +119,20 @@ export default async function Home() {
           </section>
         )}
 
+        {/* How it works hint */}
+        <div className="mb-24 text-center">
+          <a href="#how-it-works" className="inline-flex flex-col items-center gap-1 text-zinc-600 hover:text-zinc-400 transition-colors">
+            <span className="text-xs uppercase tracking-widest">How it works</span>
+            <span className="text-lg">↓</span>
+          </a>
+        </div>
+
+      </div>
+
+      {/* How it works — full width at the bottom */}
+      <div id="how-it-works" className="w-full max-w-2xl mx-auto px-4 pb-24 text-center">
+        <p className="text-xs tracking-widest text-zinc-500 uppercase mb-6">The Never Ending Prompt</p>
+        <img src="/graph.png" alt="How it works" className="w-full max-h-96 object-contain opacity-70" />
       </div>
     </main>
   )
