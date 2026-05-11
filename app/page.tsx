@@ -76,6 +76,7 @@ export default async function Home() {
         <section className="mb-10 text-left">
           <RoundClient
             roundId={round.id}
+            currentPrompt={round.prompt}
             submissions={submissions}
             closed={round.status === 'closed'}
             winnerId={round.winner_submission_id}

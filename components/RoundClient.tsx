@@ -7,11 +7,13 @@ import SubmitForm from './SubmitForm'
 
 export default function RoundClient({
   roundId,
+  currentPrompt,
   submissions: initial,
   closed,
   winnerId,
 }: {
   roundId: string
+  currentPrompt: string
   submissions: Submission[]
   closed: boolean
   winnerId: string | null
@@ -26,7 +28,7 @@ export default function RoundClient({
     <div className="space-y-8">
       {!closed && (
         <>
-          <SubmitForm roundId={roundId} onSubmitted={handleSubmitted} />
+          <SubmitForm roundId={roundId} currentPrompt={currentPrompt} onSubmitted={handleSubmitted} />
           <div className="border-t border-zinc-800" />
         </>
       )}

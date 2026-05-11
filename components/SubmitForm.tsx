@@ -5,12 +5,14 @@ import { Submission } from '@/types'
 
 export default function SubmitForm({
   roundId,
+  currentPrompt,
   onSubmitted,
 }: {
   roundId: string
+  currentPrompt: string
   onSubmitted: (submission: Submission) => void
 }) {
-  const [prompt, setPrompt] = useState('')
+  const [prompt, setPrompt] = useState(currentPrompt)
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
