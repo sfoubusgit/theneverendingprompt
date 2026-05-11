@@ -33,6 +33,13 @@ export default async function Home() {
     .order('closed_at', { ascending: false })
     .limit(10)
 
+  const { data: originRound } = await supabase
+    .from('rounds')
+    .select('id, prompt, image_url, created_at')
+    .order('created_at', { ascending: true })
+    .limit(1)
+    .single()
+
   if (!round) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -82,11 +89,11 @@ export default async function Home() {
         </section>
 
         {/* Chain history */}
-        {pastRounds && pastRounds.length > 0 && (
+        {(pastRounds && pastRounds.length > 0 || originRound) && (
           <section className="border-t border-zinc-900 pt-12 pb-8">
             <p className="text-xs text-zinc-500 uppercase tracking-widest mb-6 text-center">Chain history</p>
             <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4">
-              {pastRounds.map((r: any) => {
+              {(pastRounds ?? []).map((r: any) => {
                 const winner = (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)
                 return (
                   <div key={r.id} className="flex-shrink-0 w-64 bg-zinc-900 rounded-xl p-4">
@@ -106,6 +113,15 @@ export default async function Home() {
                   </div>
                 )
               })}
+
+              {/* Origin card — always pinned, skip if already in pastRounds */}
+              {originRound && !(pastRounds ?? []).some((r: any) => r.id === originRound.id) && (
+                <div className="flex-shrink-0 w-64 bg-zinc-900/50 border border-zinc-800 rounded-xl p-4">
+                  <p className="text-xs text-zinc-600 mb-2 uppercase tracking-widest">Origin</p>
+                  <p className="text-xs text-zinc-400 line-clamp-3">"{originRound.prompt}"</p>
+                  <p className="text-xs text-zinc-600 mt-2">{new Date(originRound.created_at).toLocaleDateString()}</p>
+                </div>
+              )}
             </div>
           </section>
         )}
