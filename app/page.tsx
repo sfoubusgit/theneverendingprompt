@@ -52,10 +52,10 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
-      <div className="w-full max-w-2xl px-4 py-16 text-center">
+      <div className="w-full max-w-2xl px-4 py-8 text-center">
 
         {/* Prompt hero */}
-        <section className="mb-12">
+        <section className="mb-8">
           {round.image_url && (
             <div className="mb-8 aspect-square w-full overflow-hidden rounded-xl bg-zinc-900">
               <img src={round.image_url} alt="Round image" className="w-full h-full object-cover" />
@@ -73,7 +73,7 @@ export default async function Home() {
         </section>
 
         {/* Submit + Vote */}
-        <section className="mb-10 text-left">
+        <section className="mb-8 text-left">
           <RoundClient
             roundId={round.id}
             currentPrompt={round.prompt}
@@ -85,7 +85,7 @@ export default async function Home() {
 
         {/* Chain history */}
         {((pastRounds && pastRounds.length > 0) || originRound) && (
-          <section className="mb-12 text-left">
+          <section className="mb-6 text-left">
             <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4 text-center">Chain history</p>
             <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4">
               {(pastRounds ?? []).map((r: any) => {
@@ -93,7 +93,7 @@ export default async function Home() {
                 return (
                   <div key={r.id} className="flex-shrink-0 w-40 bg-zinc-900 rounded-lg p-3">
                     {r.image_url && (
-                      <div className="w-full aspect-video rounded-md overflow-hidden bg-zinc-800 mb-2">
+                      <div className="w-full h-10 rounded-md overflow-hidden bg-zinc-800 mb-2">
                         <img src={r.image_url} alt="" className="w-full h-full object-cover" />
                       </div>
                     )}
@@ -120,7 +120,7 @@ export default async function Home() {
         )}
 
         {/* How it works hint */}
-        <div className="mb-24 text-center">
+        <div className="mb-8 text-center">
           <a href="#how-it-works" className="inline-flex flex-col items-center gap-1 text-zinc-600 hover:text-zinc-400 transition-colors">
             <span className="text-xs uppercase tracking-widest">How it works</span>
             <span className="text-lg">↓</span>
