@@ -23,24 +23,26 @@ export default function RoundClient({
   }
 
   return (
-    <div className="md:grid md:grid-cols-5 md:gap-10">
+    <div className="space-y-8">
       {!closed && (
-        <div className="md:col-span-2 mb-8 md:mb-0">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">Your version</p>
+        <>
           <SubmitForm roundId={roundId} onSubmitted={handleSubmitted} />
+          <div className="border-t border-zinc-800" />
+        </>
+      )}
+      {submissions.length > 0 && (
+        <div>
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
+            {closed ? 'Results' : 'What others suggested'}
+          </p>
+          <VoteSection
+            submissions={submissions}
+            roundId={roundId}
+            closed={closed}
+            winnerId={winnerId}
+          />
         </div>
       )}
-      <div className={closed ? 'md:col-span-5' : 'md:col-span-3'}>
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
-          {closed ? 'Results' : 'What others suggested'}
-        </p>
-        <VoteSection
-          submissions={submissions}
-          roundId={roundId}
-          closed={closed}
-          winnerId={winnerId}
-        />
-      </div>
     </div>
   )
 }

@@ -51,18 +51,18 @@ export default async function Home() {
   const submissions = await getSubmissionsWithCounts(round.id)
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="max-w-4xl mx-auto px-4 py-16">
+    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
+      <div className="w-full max-w-2xl px-4 py-16 text-center">
 
         {/* Prompt hero */}
-        <section className="text-center mb-12">
+        <section className="mb-12">
           {round.image_url && (
-            <div className="mb-8 mx-auto max-w-sm aspect-square overflow-hidden rounded-xl bg-zinc-900">
+            <div className="mb-8 aspect-square w-full overflow-hidden rounded-xl bg-zinc-900">
               <img src={round.image_url} alt="Round image" className="w-full h-full object-cover" />
             </div>
           )}
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Today's prompt</p>
-          <h1 className="text-2xl md:text-4xl font-serif leading-relaxed text-white mb-3">
+          <h1 className="text-2xl md:text-3xl font-serif leading-relaxed text-white mb-4">
             "{round.prompt}"
           </h1>
           <p className="text-xs text-zinc-600">
@@ -72,8 +72,8 @@ export default async function Home() {
           </p>
         </section>
 
-        {/* Submit + Vote side by side */}
-        <section className="mb-16">
+        {/* Submit + Vote */}
+        <section className="mb-10 text-left">
           <RoundClient
             roundId={round.id}
             submissions={submissions}
@@ -83,43 +83,42 @@ export default async function Home() {
         </section>
 
         {/* How it works */}
-        <section className="mb-16 border-t border-zinc-900 pt-12">
-          <p className="text-xs tracking-widest text-zinc-500 uppercase mb-6 text-center">The Never Ending Prompt</p>
-          <img src="/graph.png" alt="How it works" className="w-full max-h-72 object-contain opacity-60" />
-        </section>
+        <div className="mt-8 mb-16 -mx-4 sm:-mx-16">
+          <p className="text-xs tracking-widest text-zinc-400 uppercase mb-3 px-4 sm:px-16">The Never Ending Prompt</p>
+          <img src="/graph.png" alt="How it works" className="w-full max-h-96 object-contain opacity-70" />
+        </div>
 
         {/* Chain history */}
         {(pastRounds && pastRounds.length > 0 || originRound) && (
-          <section className="border-t border-zinc-900 pt-12 pb-8">
-            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-6 text-center">Chain history</p>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4">
+          <section className="mb-16 text-left">
+            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4 text-center">Chain history</p>
+            <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4">
               {(pastRounds ?? []).map((r: any) => {
                 const winner = (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)
                 return (
-                  <div key={r.id} className="flex-shrink-0 w-64 bg-zinc-900 rounded-xl p-4">
+                  <div key={r.id} className="flex-shrink-0 w-40 bg-zinc-900 rounded-lg p-3">
                     {r.image_url && (
-                      <div className="w-full aspect-video rounded-lg overflow-hidden bg-zinc-800 mb-3">
+                      <div className="w-full aspect-video rounded-md overflow-hidden bg-zinc-800 mb-2">
                         <img src={r.image_url} alt="" className="w-full h-full object-cover" />
                       </div>
                     )}
-                    <p className="text-xs text-zinc-500 mb-2">{new Date(r.closed_at).toLocaleDateString()}</p>
-                    <p className="text-xs text-zinc-400 line-clamp-2">"{r.prompt}"</p>
+                    <p className="text-[10px] text-zinc-600 mb-1">{new Date(r.closed_at).toLocaleDateString()}</p>
+                    <p className="text-[10px] text-zinc-400 line-clamp-2">"{r.prompt}"</p>
                     {winner && (
                       <>
-                        <p className="text-xs text-zinc-600 my-1.5">↓</p>
-                        <p className="text-xs text-white line-clamp-2">"{winner.prompt}"</p>
+                        <p className="text-[10px] text-zinc-600 my-1">↓</p>
+                        <p className="text-[10px] text-white line-clamp-2">"{winner.prompt}"</p>
                       </>
                     )}
                   </div>
                 )
               })}
 
-              {/* Origin card — always pinned, skip if already in pastRounds */}
               {originRound && !(pastRounds ?? []).some((r: any) => r.id === originRound.id) && (
-                <div className="flex-shrink-0 w-64 bg-zinc-900/50 border border-zinc-800 rounded-xl p-4">
-                  <p className="text-xs text-zinc-600 mb-2 uppercase tracking-widest">Origin</p>
-                  <p className="text-xs text-zinc-400 line-clamp-3">"{originRound.prompt}"</p>
-                  <p className="text-xs text-zinc-600 mt-2">{new Date(originRound.created_at).toLocaleDateString()}</p>
+                <div className="flex-shrink-0 w-40 bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
+                  <p className="text-[10px] text-zinc-600 mb-1 uppercase tracking-widest">Origin</p>
+                  <p className="text-[10px] text-zinc-400 line-clamp-3">"{originRound.prompt}"</p>
+                  <p className="text-[10px] text-zinc-600 mt-1">{new Date(originRound.created_at).toLocaleDateString()}</p>
                 </div>
               )}
             </div>
