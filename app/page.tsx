@@ -54,8 +54,9 @@ export default async function Home() {
               <img src={round.image_url} alt="Round image" className="w-full h-full object-cover" />
             </div>
           )}
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Today's prompt</p>
           <h1 className="text-2xl md:text-3xl font-serif leading-relaxed text-white mb-4">
-            {round.prompt}
+            "{round.prompt}"
           </h1>
           <p className="text-xs text-zinc-600">
             {round.status === 'open'
