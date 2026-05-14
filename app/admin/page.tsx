@@ -17,10 +17,14 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [stats, setStats] = useState<{ totalRounds: number; totalSubmissions: number; totalVotes: number; uniqueParticipants: number } | null>(null)
+  const [closedNoImage, setClosedNoImage] = useState<Round[]>([])
+  const [pastImageFile, setPastImageFile] = useState<File | null>(null)
+  const [pastImagePreview, setPastImagePreview] = useState<string | null>(null)
+  const [pastImageRoundId, setPastImageRoundId] = useState<string>('')
 
   useEffect(() => {
     const stored = sessionStorage.getItem('admin_key')
-    if (stored) { setAuthed(true); fetchCurrent(); fetchStats() }
+    if (stored) { setAuthed(true); fetchCurrent(); fetchStats(); fetchClosedNoImage() }
   }, [])
 
   function adminFetch(url: string, options: RequestInit = {}) {
@@ -159,6 +163,31 @@ export default function AdminPage() {
   async function fetchStats() {
     const res = await adminFetch('/api/admin/stats')
     if (res.ok) setStats(await res.json())
+  }
+
+  async function fetchClosedNoImage() {
+    const { data } = await supabase
+      .from('rounds')
+      .select('*')
+      .eq('status', 'closed')
+      .is('image_url', null)
+      .order('closed_at', { ascending: false })
+    setClosedNoImage((data as Round[]) ?? [])
+  }
+
+  async function uploadImageForPastRound() {
+    if (!pastImageFile || !pastImageRoundId) return
+    setLoading(true)
+    const url = await uploadImage(pastImageRoundId)
+    if (url) {
+      await supabase.from('rounds').update({ image_url: url }).eq('id', pastImageRoundId)
+      setMessage('Image uploaded.')
+      setPastImageFile(null)
+      setPastImagePreview(null)
+      setPastImageRoundId('')
+      fetchClosedNoImage()
+    }
+    setLoading(false)
   }
 
   async function downloadBackup() {
@@ -353,7 +382,44 @@ export default function AdminPage() {
           </>
         )}
 
-        <div className="mt-16 pt-8 border-t border-zinc-900 space-y-3">
+        {closedNoImage.length > 0 && (
+          <section className="mt-10 pt-8 border-t border-zinc-900">
+            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Add image to past round</p>
+            <select
+              value={pastImageRoundId}
+              onChange={e => setPastImageRoundId(e.target.value)}
+              className="w-full bg-zinc-900 rounded-xl px-3 py-2 text-sm text-white mb-3 focus:outline-none focus:ring-1 focus:ring-zinc-600"
+            >
+              <option value="">Select a round...</option>
+              {closedNoImage.map(r => (
+                <option key={r.id} value={r.id}>
+                  {new Date(r.closed_at!).toLocaleDateString()} — {r.prompt.slice(0, 40)}
+                </option>
+              ))}
+            </select>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={e => {
+                const f = e.target.files?.[0]
+                if (f) { setPastImageFile(f); setPastImagePreview(URL.createObjectURL(f)) }
+              }}
+              className="text-xs text-zinc-400 mb-3 block"
+            />
+            {pastImagePreview && (
+              <img src={pastImagePreview} alt="Preview" className="mb-3 max-h-40 rounded-lg object-contain" />
+            )}
+            <button
+              onClick={uploadImageForPastRound}
+              disabled={loading || !pastImageFile || !pastImageRoundId}
+              className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2.5 rounded-xl text-sm transition-colors disabled:opacity-40"
+            >
+              Upload image
+            </button>
+          </section>
+        )}
+
+        <div className="mt-10 pt-8 border-t border-zinc-900 space-y-3">
           <button
             onClick={downloadBackup}
             disabled={loading}
