@@ -168,11 +168,11 @@ export default function AdminPage() {
   async function fetchClosedNoImage() {
     const { data } = await supabase
       .from('rounds')
-      .select('*')
+      .select('*, submissions(id, prompt)')
       .eq('status', 'closed')
       .is('image_url', null)
       .order('closed_at', { ascending: false })
-    setClosedNoImage((data as Round[]) ?? [])
+    setClosedNoImage((data as any[]) ?? [])
   }
 
   async function uploadImageForPastRound() {
@@ -391,12 +391,25 @@ export default function AdminPage() {
               className="w-full bg-zinc-900 rounded-xl px-3 py-2 text-sm text-white mb-3 focus:outline-none focus:ring-1 focus:ring-zinc-600"
             >
               <option value="">Select a round...</option>
-              {closedNoImage.map(r => (
-                <option key={r.id} value={r.id}>
-                  {new Date(r.closed_at!).toLocaleDateString()} — {r.prompt.slice(0, 40)}
-                </option>
-              ))}
+              {(closedNoImage as any[]).map(r => {
+                const winnerPrompt = (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)?.prompt
+                return (
+                  <option key={r.id} value={r.id}>
+                    {new Date(r.closed_at).toLocaleDateString()} — {(winnerPrompt ?? r.prompt).slice(0, 50)}
+                  </option>
+                )
+              })}
             </select>
+            {pastImageRoundId && (() => {
+              const r = (closedNoImage as any[]).find(r => r.id === pastImageRoundId)
+              const winnerPrompt = r && (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)?.prompt
+              return winnerPrompt ? (
+                <div className="mb-3 p-3 bg-zinc-900 rounded-xl">
+                  <p className="text-xs text-zinc-500 mb-1">Generate an image from this prompt:</p>
+                  <p className="text-sm text-white font-medium">"{winnerPrompt}"</p>
+                </div>
+              ) : null
+            })()}
             <input
               type="file"
               accept="image/*"
