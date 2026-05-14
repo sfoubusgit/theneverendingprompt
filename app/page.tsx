@@ -93,8 +93,8 @@ export default async function Home() {
                 return (
                   <div key={r.id} className="flex-shrink-0 w-40 bg-zinc-900 rounded-lg p-3">
                     {r.image_url && (
-                      <div className="w-full h-10 rounded-md overflow-hidden bg-zinc-800 mb-2">
-                        <img src={r.image_url} alt="" className="w-full h-full object-cover" />
+                      <div className="w-full aspect-square rounded-md overflow-hidden bg-zinc-800 mb-2">
+                        <img src={r.image_url} alt="" className="w-full h-full object-contain" />
                       </div>
                     )}
                     <p className="text-[10px] text-zinc-600 mb-1">{new Date(r.closed_at).toLocaleDateString()}</p>
