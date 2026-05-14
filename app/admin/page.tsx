@@ -103,11 +103,12 @@ export default function AdminPage() {
     setLoading(false)
   }
 
-  async function uploadImage(roundId: string): Promise<string | null> {
-    if (!imageFile) return null
-    const ext = imageFile.name.split('.').pop()
+  async function uploadImage(roundId: string, file?: File): Promise<string | null> {
+    const f = file ?? imageFile
+    if (!f) return null
+    const ext = f.name.split('.').pop()
     const fileName = `round-${roundId}-${Date.now()}.${ext}`
-    const { error } = await supabase.storage.from('images').upload(fileName, imageFile)
+    const { error } = await supabase.storage.from('images').upload(fileName, f)
     if (error) { setMessage(error.message); return null }
     const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(fileName)
     return publicUrl
@@ -178,7 +179,7 @@ export default function AdminPage() {
   async function uploadImageForPastRound() {
     if (!pastImageFile || !pastImageRoundId) return
     setLoading(true)
-    const url = await uploadImage(pastImageRoundId)
+    const url = await uploadImage(pastImageRoundId, pastImageFile)
     if (url) {
       await supabase.from('rounds').update({ image_url: url }).eq('id', pastImageRoundId)
       setMessage('Image uploaded.')
