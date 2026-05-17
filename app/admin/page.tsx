@@ -171,7 +171,6 @@ export default function AdminPage() {
       .from('rounds')
       .select('*, submissions(id, prompt)')
       .eq('status', 'closed')
-      .is('image_url', null)
       .order('closed_at', { ascending: false })
     setClosedNoImage((data as any[]) ?? [])
   }
@@ -383,9 +382,9 @@ export default function AdminPage() {
           </>
         )}
 
-        {closedNoImage.length > 0 && (
+        {closedNoImage.length > 0 && round?.status === 'open' && (
           <section className="mt-10 pt-8 border-t border-zinc-900">
-            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Add image to past round</p>
+            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Add / replace image for past round</p>
             <select
               value={pastImageRoundId}
               onChange={e => setPastImageRoundId(e.target.value)}
