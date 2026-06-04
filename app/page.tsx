@@ -26,12 +26,13 @@ export default async function Home() {
     .limit(1)
     .single()
 
+  const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
   const { data: pastRounds } = await supabase
     .from('rounds')
     .select('id, prompt, image_url, closed_at, winner_submission_id, submissions(id, prompt)')
     .eq('status', 'closed')
+    .gte('closed_at', oneMonthAgo)
     .order('closed_at', { ascending: false })
-    .limit(10)
 
   const { data: originRound } = await supabase
     .from('rounds')
@@ -145,6 +146,9 @@ export default async function Home() {
                 )}
               </div>
             </div>
+            <a href="/history" className="font-mono text-[10px] text-zinc-700 hover:text-zinc-500 transition-colors mt-4 inline-block">
+              $ view full history →
+            </a>
           </section>
         )}
 
