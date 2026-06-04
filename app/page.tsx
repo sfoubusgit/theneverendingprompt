@@ -65,7 +65,15 @@ export default async function Home() {
         {/* Terminal header */}
         <header className="mb-10 pt-2 flex items-center justify-between">
           <p className="font-mono text-sm text-zinc-500 cursor">theneverendingprompt.xyz</p>
-          <HowItWorksToggle />
+          <div className="flex items-center gap-2">
+            <a
+              href="/history"
+              className="font-mono text-xs inline-flex items-center border border-zinc-700 text-zinc-300 hover:border-zinc-400 hover:text-white px-3 py-1.5 transition-colors"
+            >
+              $ history
+            </a>
+            <HowItWorksToggle />
+          </div>
         </header>
 
         {/* Prompt */}
