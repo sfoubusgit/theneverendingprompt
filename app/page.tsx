@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import { Submission } from '@/types'
 import RoundClient from '@/components/RoundClient'
-import HowItWorks from '@/components/HowItWorks'
+import HowItWorksToggle from '@/components/HowItWorksToggle'
 
 export const dynamic = 'force-dynamic'
 
@@ -153,22 +153,8 @@ export default async function Home() {
           </section>
         )}
 
-        {/* How it works */}
-        <section className="mb-8">
-          <a
-            href="#how-it-works"
-            className="font-mono text-xs inline-flex items-center gap-2 border border-zinc-700 text-zinc-300 hover:border-zinc-400 hover:text-white px-4 py-2 transition-colors"
-          >
-            $ --help <span className="text-zinc-500">·</span> how it works ↓
-          </a>
-        </section>
+        <HowItWorksToggle />
 
-      </div>
-
-      {/* How it works — bottom */}
-      <div id="how-it-works" className="max-w-2xl mx-auto px-4 pb-16">
-        <p className="font-mono text-xs text-zinc-600 mb-6">// HOW IT WORKS</p>
-        <HowItWorks />
       </div>
     </main>
   )
