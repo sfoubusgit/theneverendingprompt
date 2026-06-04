@@ -61,8 +61,8 @@ export default function SubmitForm({
       <div>
         <div className="flex justify-between mb-1">
           <span />
-          <span className={`text-xs ${prompt.length > 140 ? prompt.length >= 150 ? 'text-red-400' : 'text-yellow-500' : 'text-zinc-600'}`}>
-            {prompt.length}/150
+          <span className={`text-xs ${prompt.length > 230 ? prompt.length >= 250 ? 'text-red-400' : 'text-yellow-500' : 'text-zinc-600'}`}>
+            {prompt.length}/250
           </span>
         </div>
         <textarea
@@ -70,7 +70,7 @@ export default function SubmitForm({
           onChange={e => setPrompt(e.target.value)}
           rows={3}
           required
-          maxLength={150}
+          maxLength={250}
           className="w-full bg-zinc-900 rounded-xl p-3 text-sm text-white resize-none focus:outline-none focus:ring-1 focus:ring-zinc-600"
           placeholder="Change the prompt however you want..."
         />

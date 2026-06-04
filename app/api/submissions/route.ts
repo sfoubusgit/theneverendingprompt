@@ -8,8 +8,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
-  if (prompt.trim().length > 150) {
-    return NextResponse.json({ error: 'Prompt exceeds 150 characters' }, { status: 400 })
+  if (prompt.trim().length > 250) {
+    return NextResponse.json({ error: 'Prompt exceeds 250 characters' }, { status: 400 })
   }
 
   const { data: round } = await supabase
