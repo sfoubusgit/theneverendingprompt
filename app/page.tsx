@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { Submission } from '@/types'
 import RoundClient from '@/components/RoundClient'
 import HowItWorksToggle from '@/components/HowItWorksToggle'
+import ImageLightbox from '@/components/ImageLightbox'
 
 export const dynamic = 'force-dynamic'
 
@@ -138,7 +139,7 @@ export default async function Home() {
                           )}
                         </div>
                         {r.image_url && (
-                          <img src={r.image_url} alt="" className="w-10 h-10 object-cover flex-shrink-0 border border-zinc-800" />
+                          <ImageLightbox src={r.image_url} />
                         )}
                       </div>
                     </div>
