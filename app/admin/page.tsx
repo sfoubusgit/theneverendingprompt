@@ -49,6 +49,8 @@ export default function AdminPage() {
     setKeyError(false)
     setAuthed(true)
     fetchCurrent()
+    fetchStats()
+    fetchClosedNoImage()
   }
 
   async function fetchCurrent() {
