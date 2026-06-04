@@ -28,28 +28,24 @@ export default function RoundClient({
     <div className="space-y-8">
       {!closed && (
         <>
-          <SubmitForm roundId={roundId} currentPrompt={currentPrompt} onSubmitted={handleSubmitted} />
-          <div className="border-t border-zinc-800" />
+          <div>
+            <p className="font-mono text-xs text-zinc-600 mb-3">// YOUR MUTATION</p>
+            <SubmitForm roundId={roundId} currentPrompt={currentPrompt} onSubmitted={handleSubmitted} />
+          </div>
+          <p className="font-mono text-xs text-zinc-800">---</p>
         </>
       )}
-      {submissions.length > 0 && (
-        <div>
-          <div className="mb-4">
-            <p className="text-xs text-zinc-500 uppercase tracking-widest">
-              {closed ? 'Results' : 'What others suggested'}
-            </p>
-            {!closed && (
-              <p className="text-xs text-zinc-600 mt-1">tap a prompt to vote for it</p>
-            )}
-          </div>
-          <VoteSection
-            submissions={submissions}
-            roundId={roundId}
-            closed={closed}
-            winnerId={winnerId}
-          />
-        </div>
-      )}
+      <div>
+        <p className="font-mono text-xs text-zinc-600 mb-3">
+          {closed ? '// RESULTS' : '// OTHERS — click to vote'}
+        </p>
+        <VoteSection
+          submissions={submissions}
+          roundId={roundId}
+          closed={closed}
+          winnerId={winnerId}
+        />
+      </div>
     </div>
   )
 }

@@ -50,8 +50,8 @@ export default function SubmitForm({
 
   if (done) {
     return (
-      <div className="text-center py-6 text-zinc-400 text-sm">
-        Submitted. Now vote for your favorite.
+      <div className="font-mono text-sm text-zinc-500 py-4">
+        [ok] submitted. scroll down to vote.
       </div>
     )
   }
@@ -60,9 +60,9 @@ export default function SubmitForm({
     <form onSubmit={handleSubmit} className="space-y-3">
       <div>
         <div className="flex justify-between mb-1">
-          <span />
-          <span className={`text-xs ${prompt.length > 230 ? prompt.length >= 250 ? 'text-red-400' : 'text-yellow-500' : 'text-zinc-600'}`}>
-            {prompt.length}/250
+          <span className="font-mono text-xs text-zinc-600">&gt; your mutation</span>
+          <span className={`font-mono text-xs ${prompt.length > 230 ? prompt.length >= 250 ? 'text-red-400' : 'text-yellow-500' : 'text-zinc-600'}`}>
+            [{prompt.length}/250]
           </span>
         </div>
         <textarea
@@ -71,30 +71,30 @@ export default function SubmitForm({
           rows={3}
           required
           maxLength={250}
-          className="w-full bg-zinc-900 rounded-xl p-3 text-sm text-white resize-none focus:outline-none focus:ring-1 focus:ring-zinc-600"
-          placeholder="Change the prompt however you want..."
+          className="w-full bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm text-white font-mono resize-none focus:outline-none focus:border-zinc-400 transition-colors"
+          placeholder="mutate the prompt..."
         />
       </div>
 
       <div>
-        <label className="block text-xs text-zinc-500 mb-1">Your name</label>
+        <span className="font-mono text-xs text-zinc-600 block mb-1">&gt; your name</span>
         <input
           value={name}
           onChange={e => setName(e.target.value)}
           required
-          className="w-full bg-zinc-900 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-zinc-600"
-          placeholder="Anonymous"
+          className="w-full bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-zinc-400 transition-colors"
+          placeholder="anonymous"
         />
       </div>
 
-      {error && <p className="text-red-400 text-xs">{error}</p>}
+      {error && <p className="font-mono text-xs text-red-400">[error] {error}</p>}
 
       <button
         type="submit"
         disabled={loading || !prompt.trim() || !name.trim()}
-        className="w-full bg-white text-black font-semibold py-2.5 rounded-xl hover:bg-zinc-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+        className="w-full border border-zinc-600 text-white font-mono text-sm py-2.5 hover:bg-zinc-900 hover:border-zinc-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        {loading ? 'Submitting...' : 'Submit prompt change'}
+        {loading ? '$ submitting...' : '[SUBMIT]'}
       </button>
     </form>
   )

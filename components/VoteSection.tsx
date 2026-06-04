@@ -41,7 +41,6 @@ export default function VoteSection({
     const voterId = getVoterId()
     const prev = myVote
 
-    // Optimistic update
     setMyVote(submissionId)
     setCounts(c => {
       const next = { ...c }
@@ -62,8 +61,12 @@ export default function VoteSection({
   const sorted = [...submissions].sort((a, b) => (counts[b.id] ?? 0) - (counts[a.id] ?? 0))
   const maxVotes = Math.max(...Object.values(counts), 1)
 
+  if (submissions.length === 0) {
+    return <p className="font-mono text-xs text-zinc-600 py-4">$ no submissions yet. be first.</p>
+  }
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {sorted.map(s => {
         const count = counts[s.id] ?? 0
         const isMyVote = myVote === s.id
@@ -73,44 +76,37 @@ export default function VoteSection({
           <div
             key={s.id}
             onClick={() => vote(s.id)}
-            className={`relative rounded-xl p-4 transition-all ${
+            className={`relative border transition-colors ${
               closed
                 ? isWinner
-                  ? 'bg-white/10 border border-white/20'
-                  : 'bg-zinc-900 opacity-50'
+                  ? 'border-zinc-400 bg-zinc-900'
+                  : 'border-zinc-800 bg-zinc-950 opacity-40'
                 : isMyVote
-                  ? 'bg-zinc-800 border border-zinc-600 cursor-pointer'
-                  : 'bg-zinc-900 hover:bg-zinc-800 cursor-pointer'
+                  ? 'border-zinc-400 bg-zinc-900 cursor-pointer'
+                  : 'border-zinc-800 bg-zinc-950 hover:border-zinc-600 cursor-pointer'
             }`}
           >
             {/* Vote bar */}
             <div
-              className="absolute inset-0 rounded-xl bg-white/10 transition-all duration-300"
+              className="absolute inset-0 bg-white/5 transition-all duration-500"
               style={{ width: `${(count / maxVotes) * 100}%` }}
             />
 
-            <div className="relative flex items-start justify-between gap-3">
-              <div className="flex-1">
-                <p className="text-sm leading-relaxed text-white">{s.prompt}</p>
-                <p className="text-xs text-zinc-500 mt-1">
+            <div className="relative flex items-start gap-3 px-3 py-3">
+              <span className="font-mono text-xs text-zinc-500 flex-shrink-0 w-8 pt-0.5">
+                {isMyVote && !closed ? '[>]' : `[${count}]`}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="font-mono text-sm text-white leading-relaxed">"{s.prompt}"</p>
+                <p className="font-mono text-xs text-zinc-600 mt-1">
                   {s.submitter_name}
-                  {isWinner && <span className="ml-2 text-yellow-400">winner</span>}
+                  {isWinner && <span className="ml-2 text-zinc-400">[winner]</span>}
                 </p>
-              </div>
-              <div className="flex-shrink-0 flex flex-col items-center gap-1">
-                <span className="text-sm font-semibold text-white">{count}</span>
-                {isMyVote && !closed && (
-                  <span className="text-xs text-zinc-400">your vote</span>
-                )}
               </div>
             </div>
           </div>
         )
       })}
-
-      {submissions.length === 0 && (
-        <p className="text-zinc-600 text-sm text-center py-6">No submissions yet. Be the first.</p>
-      )}
     </div>
   )
 }
