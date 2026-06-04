@@ -143,6 +143,7 @@ export default async function Home() {
                     <p className="font-mono text-xs text-zinc-400">"{originRound.prompt}"</p>
                   </div>
                 )}
+              </div>
             </div>
           </section>
         )}
