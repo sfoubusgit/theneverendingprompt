@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import { Submission } from '@/types'
 import RoundClient from '@/components/RoundClient'
+import HowItWorks from '@/components/HowItWorks'
 
 export const dynamic = 'force-dynamic'
 
@@ -164,7 +165,7 @@ export default async function Home() {
       {/* How it works — bottom */}
       <div id="how-it-works" className="max-w-2xl mx-auto px-4 pb-16">
         <p className="font-mono text-xs text-zinc-600 mb-6">// HOW IT WORKS</p>
-        <img src="/graph.png" alt="How it works" className="w-full max-h-96 object-contain opacity-60" />
+        <HowItWorks />
       </div>
     </main>
   )
