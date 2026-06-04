@@ -63,8 +63,9 @@ export default async function Home() {
       <div className="max-w-2xl mx-auto px-4 py-8">
 
         {/* Terminal header */}
-        <header className="mb-10 pt-2">
+        <header className="mb-10 pt-2 flex items-center justify-between">
           <p className="font-mono text-sm text-zinc-500 cursor">theneverendingprompt.xyz</p>
+          <HowItWorksToggle />
         </header>
 
         {/* Prompt */}
@@ -153,7 +154,6 @@ export default async function Home() {
           </section>
         )}
 
-        <HowItWorksToggle />
 
       </div>
     </main>
