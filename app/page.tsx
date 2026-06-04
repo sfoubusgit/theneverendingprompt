@@ -155,8 +155,11 @@ export default async function Home() {
 
         {/* How it works */}
         <section className="mb-8">
-          <a href="#how-it-works" className="font-mono text-xs text-zinc-600 hover:text-zinc-400 transition-colors">
-            $ --help ↓
+          <a
+            href="#how-it-works"
+            className="font-mono text-xs inline-flex items-center gap-2 border border-zinc-700 text-zinc-300 hover:border-zinc-400 hover:text-white px-4 py-2 transition-colors"
+          >
+            $ --help <span className="text-zinc-500">·</span> how it works ↓
           </a>
         </section>
 
