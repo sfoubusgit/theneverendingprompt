@@ -97,39 +97,52 @@ export default async function Home() {
           />
         </section>
 
-        {/* Chain history */}
+        {/* Chain history — git log style */}
         {((pastRounds && pastRounds.length > 0) || originRound) && (
           <section className="mb-10">
-            <p className="font-mono text-xs text-zinc-600 mb-4">// CHAIN HISTORY</p>
-            <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4">
-              {(pastRounds ?? []).map((r: any) => {
-                const winner = (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)
-                return (
-                  <div key={r.id} className="flex-shrink-0 w-44 border border-zinc-800 bg-zinc-950 p-3">
-                    {r.image_url && (
-                      <div className="w-full aspect-video overflow-hidden bg-zinc-900 mb-3">
-                        <img src={r.image_url} alt="" className="w-full h-full object-contain" />
-                      </div>
-                    )}
-                    <p className="font-mono text-[10px] text-zinc-600 mb-1">{new Date(r.closed_at).toLocaleDateString()}</p>
-                    <p className="font-mono text-[10px] text-zinc-400 line-clamp-2">"{r.prompt}"</p>
-                    {winner && (
-                      <>
-                        <p className="font-mono text-[10px] text-zinc-700 my-1">↓</p>
-                        <p className="font-mono text-[10px] text-zinc-200 line-clamp-2">"{winner.prompt}"</p>
-                      </>
-                    )}
-                  </div>
-                )
-              })}
+            <p className="font-mono text-xs text-zinc-600 mb-5">// CHAIN HISTORY</p>
+            <div className="relative">
+              {/* Vertical connecting line */}
+              <div className="absolute left-[5px] top-2 bottom-2 w-px bg-zinc-800" />
 
-              {originRound && !(pastRounds ?? []).some((r: any) => r.id === originRound.id) && (
-                <div className="flex-shrink-0 w-44 border border-zinc-800 bg-zinc-950 p-3">
-                  <p className="font-mono text-[10px] text-zinc-600 mb-1 uppercase tracking-widest">origin</p>
-                  <p className="font-mono text-[10px] text-zinc-400 line-clamp-3">"{originRound.prompt}"</p>
-                  <p className="font-mono text-[10px] text-zinc-600 mt-1">{new Date(originRound.created_at).toLocaleDateString()}</p>
-                </div>
-              )}
+              <div className="space-y-5 pl-6">
+                {(pastRounds ?? []).map((r: any) => {
+                  const winner = (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)
+                  const hash = r.id.slice(0, 6)
+                  return (
+                    <div key={r.id} className="relative">
+                      {/* * dot */}
+                      <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-zinc-600 bg-black" />
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-mono text-[10px] text-zinc-600 mb-1">
+                            {hash} · {new Date(r.closed_at).toLocaleDateString('en-GB').replace(/\//g, '.')}
+                          </p>
+                          <p className="font-mono text-xs text-zinc-400 line-clamp-1">"{r.prompt}"</p>
+                          {winner && (
+                            <>
+                              <p className="font-mono text-[10px] text-zinc-700 my-0.5 ml-2">↓</p>
+                              <p className="font-mono text-xs text-zinc-200 line-clamp-1 ml-2">"{winner.prompt}"</p>
+                            </>
+                          )}
+                        </div>
+                        {r.image_url && (
+                          <img src={r.image_url} alt="" className="w-10 h-10 object-cover flex-shrink-0 border border-zinc-800" />
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {originRound && !(pastRounds ?? []).some((r: any) => r.id === originRound.id) && (
+                  <div className="relative">
+                    <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-zinc-700 bg-black" />
+                    <p className="font-mono text-[10px] text-zinc-600 mb-1">
+                      {originRound.id.slice(0, 6)} · {new Date(originRound.created_at).toLocaleDateString('en-GB').replace(/\//g, '.')} · [origin]
+                    </p>
+                    <p className="font-mono text-xs text-zinc-400">"{originRound.prompt}"</p>
+                  </div>
+                )}
             </div>
           </section>
         )}
