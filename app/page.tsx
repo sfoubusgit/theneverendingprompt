@@ -71,14 +71,15 @@ export default async function Home() {
               href="https://www.instagram.com/theneverendingprompt.xyz/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center border border-zinc-700 text-zinc-300 hover:border-zinc-400 hover:text-white px-3 py-1.5 transition-colors"
+              className="font-mono text-xs inline-flex items-center gap-1.5 border border-zinc-700 text-zinc-300 hover:border-zinc-400 hover:text-white px-3 py-1.5 transition-colors"
               aria-label="Follow on Instagram"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                 <circle cx="12" cy="12" r="4"/>
                 <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
               </svg>
+              follow
             </a>
             <a
               href="/history"
