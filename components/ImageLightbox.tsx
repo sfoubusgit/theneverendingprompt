@@ -11,7 +11,7 @@ export default function ImageLightbox({ src, alt }: { src: string; alt?: string 
         src={src}
         alt={alt ?? ''}
         onClick={() => setOpen(true)}
-        className="w-10 h-10 object-cover flex-shrink-0 border border-zinc-800 cursor-pointer hover:border-zinc-500 transition-colors"
+        className="w-10 h-10 object-cover flex-shrink-0 border border-cyan-900 cursor-pointer hover:border-cyan-500 transition-colors"
       />
 
       {open && (
@@ -27,7 +27,7 @@ export default function ImageLightbox({ src, alt }: { src: string; alt?: string 
           />
           <button
             onClick={() => setOpen(false)}
-            className="absolute top-4 right-4 font-mono text-xs text-zinc-500 hover:text-white transition-colors"
+            className="absolute top-4 right-4 font-mono text-xs text-cyan-700 hover:text-cyan-300 transition-colors"
           >
             [close]
           </button>

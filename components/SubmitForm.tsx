@@ -50,7 +50,7 @@ export default function SubmitForm({
 
   if (done) {
     return (
-      <div className="font-mono text-sm text-zinc-500 py-4">
+      <div className="font-mono text-sm text-cyan-600 py-4">
         [ok] submitted. scroll down to vote.
       </div>
     )
@@ -60,8 +60,8 @@ export default function SubmitForm({
     <form onSubmit={handleSubmit} className="space-y-3">
       <div>
         <div className="flex justify-between mb-1">
-          <span className="font-mono text-xs text-zinc-600">&gt; your mutation</span>
-          <span className={`font-mono text-xs ${prompt.length > 230 ? prompt.length >= 250 ? 'text-red-400' : 'text-yellow-500' : 'text-zinc-600'}`}>
+          <span className="font-mono text-xs text-cyan-700">&gt; your mutation</span>
+          <span className={`font-mono text-xs ${prompt.length > 230 ? prompt.length >= 250 ? 'text-red-400' : 'text-yellow-500' : 'text-cyan-800'}`}>
             [{prompt.length}/250]
           </span>
         </div>
@@ -71,18 +71,18 @@ export default function SubmitForm({
           rows={3}
           required
           maxLength={250}
-          className="w-full bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm text-white font-mono resize-none focus:outline-none focus:border-zinc-400 transition-colors"
+          className="w-full bg-zinc-950 border border-cyan-900 px-3 py-2 text-sm text-white font-mono resize-none focus:outline-none focus:border-cyan-500 transition-colors"
           placeholder="mutate the prompt..."
         />
       </div>
 
       <div>
-        <span className="font-mono text-xs text-zinc-600 block mb-1">&gt; your name</span>
+        <span className="font-mono text-xs text-cyan-700 block mb-1">&gt; your name</span>
         <input
           value={name}
           onChange={e => setName(e.target.value)}
           required
-          className="w-full bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-zinc-400 transition-colors"
+          className="w-full bg-zinc-950 border border-cyan-900 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-cyan-500 transition-colors"
           placeholder="anonymous"
         />
       </div>
@@ -92,7 +92,7 @@ export default function SubmitForm({
       <button
         type="submit"
         disabled={loading || !prompt.trim() || !name.trim()}
-        className="w-full border border-zinc-600 text-white font-mono text-sm py-2.5 hover:bg-zinc-900 hover:border-zinc-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+        className="w-full border border-pink-500 text-pink-400 font-mono text-sm py-2.5 hover:bg-pink-950 hover:border-pink-400 hover:text-pink-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       >
         {loading ? '$ submitting...' : '[SUBMIT]'}
       </button>

@@ -29,14 +29,14 @@ export default function RoundClient({
       {!closed && (
         <>
           <div>
-            <p className="font-mono text-xs text-zinc-600 mb-3">// YOUR MUTATION</p>
+            <p className="font-mono text-xs text-cyan-700 mb-3">// YOUR MUTATION</p>
             <SubmitForm roundId={roundId} currentPrompt={currentPrompt} onSubmitted={handleSubmitted} />
           </div>
-          <p className="font-mono text-xs text-zinc-800">---</p>
+          <p className="font-mono text-xs text-cyan-950">---</p>
         </>
       )}
       <div>
-        <p className="font-mono text-xs text-zinc-600 mb-3">
+        <p className="font-mono text-xs text-cyan-700 mb-3">
           {closed ? '// RESULTS' : '// OTHERS — click to vote'}
         </p>
         <VoteSection

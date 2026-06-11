@@ -23,18 +23,18 @@ export default async function HistoryPage() {
       <div className="max-w-2xl mx-auto px-4 py-8">
 
         <header className="mb-10 pt-2">
-          <a href="/" className="font-mono text-xs text-zinc-600 hover:text-zinc-400 transition-colors">← back</a>
+          <a href="/" className="font-mono text-xs text-cyan-800 hover:text-cyan-500 transition-colors">← back</a>
         </header>
 
-        <p className="font-mono text-xs text-zinc-600 mb-1">theneverendingprompt.xyz</p>
+        <p className="font-mono text-xs text-cyan-700 mb-1">theneverendingprompt.xyz</p>
         <p className="font-mono text-2xl text-white mb-8">$ git log</p>
 
-        <p className="font-mono text-xs text-zinc-600 mb-6">
+        <p className="font-mono text-xs text-cyan-700 mb-6">
           // {allRounds.length} round{allRounds.length !== 1 ? 's' : ''} in the chain
         </p>
 
         <div className="relative">
-          <div className="absolute left-[5px] top-2 bottom-2 w-px bg-zinc-800" />
+          <div className="absolute left-[5px] top-2 bottom-2 w-px bg-cyan-950" />
 
           <div className="space-y-6 pl-6">
             {allRounds.map((r: any) => {
@@ -44,23 +44,23 @@ export default async function HistoryPage() {
 
               return (
                 <div key={r.id} className="relative">
-                  <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-zinc-600 bg-black" />
+                  <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-cyan-700 bg-black" />
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono text-[10px] text-zinc-600 mb-1">
+                      <p className="font-mono text-[10px] text-zinc-500 mb-1">
                         {hash} · {new Date(r.closed_at).toLocaleDateString('en-GB').replace(/\//g, '.')}
-                        {isOrigin && <span className="ml-2 text-zinc-700">[origin]</span>}
+                        {isOrigin && <span className="ml-2 text-cyan-900">[origin]</span>}
                       </p>
                       <p className="font-mono text-xs text-zinc-400">"{r.prompt}"</p>
                       {winner && (
                         <>
-                          <p className="font-mono text-[10px] text-zinc-700 my-0.5 ml-2">↓</p>
-                          <p className="font-mono text-xs text-zinc-200 ml-2">"{winner.prompt}"</p>
+                          <p className="font-mono text-[10px] text-cyan-800 my-0.5 ml-2">↓</p>
+                          <p className="font-mono text-xs text-cyan-200 ml-2">"{winner.prompt}"</p>
                         </>
                       )}
                     </div>
                     {r.image_url && (
-                      <img src={r.image_url} alt="" className="w-12 h-12 object-cover flex-shrink-0 border border-zinc-800" />
+                      <img src={r.image_url} alt="" className="w-12 h-12 object-cover flex-shrink-0 border border-cyan-900" />
                     )}
                   </div>
                 </div>
@@ -69,8 +69,8 @@ export default async function HistoryPage() {
 
             {originRound && !allRounds.some((r: any) => r.id === originRound.id) && (
               <div className="relative">
-                <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-zinc-700 bg-black" />
-                <p className="font-mono text-[10px] text-zinc-600 mb-1">
+                <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-cyan-900 bg-black" />
+                <p className="font-mono text-[10px] text-zinc-500 mb-1">
                   {originRound.id.slice(0, 6)} · {new Date(originRound.created_at).toLocaleDateString('en-GB').replace(/\//g, '.')} · [origin]
                 </p>
                 <p className="font-mono text-xs text-zinc-400">"{originRound.prompt}"</p>
@@ -79,8 +79,8 @@ export default async function HistoryPage() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-zinc-900">
-          <a href="/" className="font-mono text-xs text-zinc-600 hover:text-zinc-400 transition-colors">← back to today's prompt</a>
+        <div className="mt-12 pt-8 border-t border-cyan-950">
+          <a href="/" className="font-mono text-xs text-cyan-800 hover:text-cyan-500 transition-colors">← back to today's prompt</a>
         </div>
 
       </div>

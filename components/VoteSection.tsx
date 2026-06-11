@@ -62,7 +62,7 @@ export default function VoteSection({
   const maxVotes = Math.max(...Object.values(counts), 1)
 
   if (submissions.length === 0) {
-    return <p className="font-mono text-xs text-zinc-600 py-4">$ no submissions yet. be first.</p>
+    return <p className="font-mono text-xs text-cyan-800 py-4">$ no submissions yet. be first.</p>
   }
 
   return (
@@ -79,28 +79,28 @@ export default function VoteSection({
             className={`relative border transition-colors ${
               closed
                 ? isWinner
-                  ? 'border-zinc-400 bg-zinc-900'
+                  ? 'border-pink-500 bg-pink-950/20'
                   : 'border-zinc-800 bg-zinc-950 opacity-40'
                 : isMyVote
-                  ? 'border-zinc-400 bg-zinc-900 cursor-pointer'
-                  : 'border-zinc-800 bg-zinc-950 hover:border-zinc-600 cursor-pointer'
+                  ? 'border-pink-500 bg-pink-950/20 cursor-pointer'
+                  : 'border-zinc-800 bg-zinc-950 hover:border-cyan-800 cursor-pointer'
             }`}
           >
             {/* Vote bar */}
             <div
-              className="absolute inset-0 bg-white/5 transition-all duration-500"
+              className="absolute inset-0 bg-cyan-500/10 transition-all duration-500"
               style={{ width: `${(count / maxVotes) * 100}%` }}
             />
 
             <div className="relative flex items-start gap-3 px-3 py-3">
-              <span className="font-mono text-xs text-zinc-500 flex-shrink-0 w-8 pt-0.5">
+              <span className={`font-mono text-xs flex-shrink-0 w-8 pt-0.5 ${isMyVote && !closed ? 'text-pink-400' : 'text-cyan-700'}`}>
                 {isMyVote && !closed ? '[>]' : `[${count}]`}
               </span>
               <div className="flex-1 min-w-0">
                 <p className="font-mono text-sm text-white leading-relaxed">"{s.prompt}"</p>
-                <p className="font-mono text-xs text-zinc-600 mt-1">
+                <p className="font-mono text-xs text-zinc-500 mt-1">
                   {s.submitter_name}
-                  {isWinner && <span className="ml-2 text-zinc-400">[winner]</span>}
+                  {isWinner && <span className="ml-2 text-pink-400">[winner]</span>}
                 </p>
               </div>
             </div>

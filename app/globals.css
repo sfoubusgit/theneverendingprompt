@@ -19,4 +19,5 @@ body {
   content: '█';
   animation: blink 1s step-end infinite;
   margin-left: 2px;
+  color: #22d3ee;
 }
