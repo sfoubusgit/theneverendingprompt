@@ -15,6 +15,12 @@ body {
   50% { opacity: 0; }
 }
 
+@keyframes dna-sweep {
+  0%   { transform: translateX(-150%); }
+  38%  { transform: translateX(150%); }
+  100% { transform: translateX(150%); }
+}
+
 .cursor::after {
   content: '█';
   animation: blink 1s step-end infinite;

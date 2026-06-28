@@ -22,7 +22,46 @@ export default async function HistoryPage() {
     <main className="min-h-screen bg-black text-[#f0f0f0]">
       <div className="max-w-2xl mx-auto px-4 py-8">
 
-        <header className="mb-10 pt-2 flex items-center justify-between">
+        <header className="mb-10 pt-2 flex items-center justify-between relative overflow-hidden">
+
+          <div className="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 640 48"
+              preserveAspectRatio="xMidYMid meet"
+              role="presentation"
+            >
+              <defs>
+                <linearGradient id="sg-a" x1="0" y1="0" x2="640" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="#00e5ff" stopOpacity="0"/>
+                  <stop offset="10%"  stopColor="#00e5ff" stopOpacity="0.13"/>
+                  <stop offset="90%"  stopColor="#00e5ff" stopOpacity="0.13"/>
+                  <stop offset="100%" stopColor="#00e5ff" stopOpacity="0"/>
+                </linearGradient>
+                <linearGradient id="sg-b" x1="0" y1="0" x2="640" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="#ff2d87" stopOpacity="0"/>
+                  <stop offset="10%"  stopColor="#ff2d87" stopOpacity="0.13"/>
+                  <stop offset="90%"  stopColor="#ff2d87" stopOpacity="0.13"/>
+                  <stop offset="100%" stopColor="#ff2d87" stopOpacity="0"/>
+                </linearGradient>
+              </defs>
+              <path
+                d="M0,24 C16,38 64,38 80,24 C96,10 144,10 160,24 C176,38 224,38 240,24 C256,10 304,10 320,24 C336,38 384,38 400,24 C416,10 464,10 480,24 C496,38 544,38 560,24 C576,10 624,10 640,24"
+                fill="none" stroke="url(#sg-a)" strokeWidth="1.5"
+              />
+              <path
+                d="M0,24 C16,10 64,10 80,24 C96,38 144,38 160,24 C176,10 224,10 240,24 C256,38 304,38 320,24 C336,10 384,10 400,24 C416,38 464,38 480,24 C496,10 544,10 560,24 C576,38 624,38 640,24"
+                fill="none" stroke="url(#sg-b)" strokeWidth="1.5"
+              />
+            </svg>
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(90deg, transparent 15%, rgba(0,229,255,0.11) 40%, rgba(255,255,255,0.07) 50%, rgba(255,45,135,0.09) 60%, transparent 85%)',
+                animation: 'dna-sweep 9s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              }}
+            />
+          </div>
           <a href="/" className="font-mono text-sm font-bold tracking-tight cursor select-none">
             <span className="text-[#ff2d87]">›</span>
             <span className="text-[#00e5ff]">T</span>
