@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="55%">
+      <stop offset="0%"   stop-color="#080c18"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+
+  <!-- Wordmark: ›T·N·E·P.XYZ█ -->
+  <!-- Each element sized and colored to exactly match the website header -->
+  <text
+    y="530"
+    font-family="'Courier New', 'Lucida Console', monospace"
+    font-size="96"
+    font-weight="bold"
+    text-anchor="middle"
+  >
+    <tspan fill="#ff2d87" x="500">&#x203a;</tspan><tspan fill="#00e5ff">T</tspan><tspan fill="#ffffff" fill-opacity="0.28">&#xB7;</tspan><tspan fill="#ff2d87">N</tspan><tspan fill="#ffffff" fill-opacity="0.28">&#xB7;</tspan><tspan fill="#00e5ff">E</tspan><tspan fill="#ffffff" fill-opacity="0.28">&#xB7;</tspan><tspan fill="#ff2d87">P</tspan><tspan fill="#ffffff" fill-opacity="0.38">.XYZ</tspan><tspan fill="#22d3ee">&#x2588;</tspan>
+  </text>
+
+  <!-- Full name below -->
+  <text
+    x="500" y="594"
+    font-family="'Courier New', 'Lucida Console', monospace"
+    font-size="14"
+    fill="#ffffff"
+    fill-opacity="0.28"
+    text-anchor="middle"
+    letter-spacing="5"
+  >THE NEVER ENDING PROMPT</text>
+
+  <!-- Slogan -->
+  <text
+    x="500" y="622"
+    font-family="'Courier New', 'Lucida Console', monospace"
+    font-size="11"
+    fill="#ffffff"
+    fill-opacity="0.14"
+    text-anchor="middle"
+    letter-spacing="4"
+  >THE PROMPT NEVER DIES.</text>
+</svg>
