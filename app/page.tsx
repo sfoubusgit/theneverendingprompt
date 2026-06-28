@@ -67,8 +67,14 @@ export default async function Home() {
         <header className="mb-10 pt-2 flex items-center justify-between">
           <a href="/" className="font-mono text-sm font-bold tracking-tight cursor select-none">
             <span className="text-[#ff2d87]">›</span>
-            <span className="text-white">TNEP</span>
-            <span className="text-[#ff2d87]">.XYZ</span>
+            <span className="text-[#00e5ff]">T</span>
+            <span className="text-white opacity-30">·</span>
+            <span className="text-[#ff2d87]">N</span>
+            <span className="text-white opacity-30">·</span>
+            <span className="text-[#00e5ff]">E</span>
+            <span className="text-white opacity-30">·</span>
+            <span className="text-[#ff2d87]">P</span>
+            <span className="text-white opacity-40">.XYZ</span>
           </a>
           <div className="flex items-center gap-2">
             <a
