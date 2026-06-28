@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-export default function ImageLightbox({ src, alt }: { src: string; alt?: string }) {
+export default function ImageLightbox({ src, alt, thumbnailClassName }: { src: string; alt?: string; thumbnailClassName?: string }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -11,7 +11,7 @@ export default function ImageLightbox({ src, alt }: { src: string; alt?: string 
         src={src}
         alt={alt ?? ''}
         onClick={() => setOpen(true)}
-        className="w-10 h-10 object-cover flex-shrink-0 border border-cyan-900 cursor-pointer hover:border-cyan-500 transition-colors"
+        className={thumbnailClassName ?? "w-10 h-10 object-cover flex-shrink-0 border border-cyan-900 cursor-pointer hover:border-cyan-500 transition-colors"}
       />
 
       {open && (

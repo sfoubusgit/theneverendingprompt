@@ -103,13 +103,16 @@ export default async function Home() {
 
         {/* Prompt */}
         <section className="mb-10">
-          <p className="font-mono text-xs text-cyan-700 mb-2 uppercase tracking-widest">{roundLabel} · {round.status === 'open' ? 'open' : 'closed'}</p>
-
-          {round.image_url && (
-            <div className="mb-6 w-full aspect-square overflow-hidden bg-zinc-900 border border-zinc-800">
-              <img src={round.image_url} alt="Round image" className="w-full h-full object-cover" />
-            </div>
-          )}
+          <div className="flex items-start justify-between gap-4 mb-3">
+            <p className="font-mono text-xs text-cyan-700 uppercase tracking-widest pt-1">{roundLabel} · {round.status === 'open' ? 'open' : 'closed'}</p>
+            {round.image_url && (
+              <ImageLightbox
+                src={round.image_url}
+                alt="Round image"
+                thumbnailClassName="w-16 h-16 object-cover flex-shrink-0 border border-zinc-800 cursor-pointer hover:border-cyan-800 transition-colors"
+              />
+            )}
+          </div>
 
           <p className="font-mono text-2xl md:text-3xl text-white leading-relaxed mb-3">
             "{round.prompt}"
