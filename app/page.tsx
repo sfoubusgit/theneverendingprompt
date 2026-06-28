@@ -65,8 +65,10 @@ export default async function Home() {
 
         {/* Terminal header */}
         <header className="mb-10 pt-2 flex items-center justify-between">
-          <a href="/">
-            <img src="/logo/compact.svg" alt="The Never Ending Prompt" className="h-8 w-auto" />
+          <a href="/" className="font-mono text-sm font-bold tracking-tight cursor select-none">
+            <span className="text-[#ff2d87]">›</span>
+            <span className="text-white">TNEP</span>
+            <span className="text-[#ff2d87]">.XYZ</span>
           </a>
           <div className="flex items-center gap-2">
             <a
