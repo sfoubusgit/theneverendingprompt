@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 48" width="210" height="48">
+  <defs>
+    <clipPath id="c1"><rect x="10" y="0" width="24" height="48"/></clipPath>
+    <clipPath id="c2"><rect x="34" y="0" width="24" height="48"/></clipPath>
+    <clipPath id="c3"><rect x="58" y="0" width="24" height="48"/></clipPath>
+    <clipPath id="c4"><rect x="82" y="0" width="24" height="48"/></clipPath>
+    <clipPath id="c5"><rect x="106" y="0" width="24" height="48"/></clipPath>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="210" height="48" fill="#080c18"/>
+
+  <!-- hp=24, cy=24, amp=13 — crossings at 10,34,58,82,106,130 — letters at 34·58·82·106 -->
+
+  <!-- Zone 1: B front -->
+  <path clip-path="url(#c1)" d="M10,24 C16,37 28,37 34,24 C40,11 52,11 58,24 C64,37 76,37 82,24 C88,11 100,11 106,24 C112,37 124,37 130,24" fill="none" stroke="#00e5ff" stroke-width="2" opacity="0.18"/>
+  <path clip-path="url(#c1)" d="M10,24 C16,11 28,11 34,24 C40,37 52,37 58,24 C64,11 76,11 82,24 C88,37 100,37 106,24 C112,11 124,11 130,24" fill="none" stroke="#ff2d87" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Zone 2: A front -->
+  <path clip-path="url(#c2)" d="M10,24 C16,11 28,11 34,24 C40,37 52,37 58,24 C64,11 76,11 82,24 C88,37 100,37 106,24 C112,11 124,11 130,24" fill="none" stroke="#ff2d87" stroke-width="2" opacity="0.18"/>
+  <path clip-path="url(#c2)" d="M10,24 C16,37 28,37 34,24 C40,11 52,11 58,24 C64,37 76,37 82,24 C88,11 100,11 106,24 C112,37 124,37 130,24" fill="none" stroke="#00e5ff" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Zone 3: B front -->
+  <path clip-path="url(#c3)" d="M10,24 C16,37 28,37 34,24 C40,11 52,11 58,24 C64,37 76,37 82,24 C88,11 100,11 106,24 C112,37 124,37 130,24" fill="none" stroke="#00e5ff" stroke-width="2" opacity="0.18"/>
+  <path clip-path="url(#c3)" d="M10,24 C16,11 28,11 34,24 C40,37 52,37 58,24 C64,11 76,11 82,24 C88,37 100,37 106,24 C112,11 124,11 130,24" fill="none" stroke="#ff2d87" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Zone 4: A front -->
+  <path clip-path="url(#c4)" d="M10,24 C16,11 28,11 34,24 C40,37 52,37 58,24 C64,11 76,11 82,24 C88,37 100,37 106,24 C112,11 124,11 130,24" fill="none" stroke="#ff2d87" stroke-width="2" opacity="0.18"/>
+  <path clip-path="url(#c4)" d="M10,24 C16,37 28,37 34,24 C40,11 52,11 58,24 C64,37 76,37 82,24 C88,11 100,11 106,24 C112,37 124,37 130,24" fill="none" stroke="#00e5ff" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Zone 5: B front -->
+  <path clip-path="url(#c5)" d="M10,24 C16,37 28,37 34,24 C40,11 52,11 58,24 C64,37 76,37 82,24 C88,11 100,11 106,24 C112,37 124,37 130,24" fill="none" stroke="#00e5ff" stroke-width="2" opacity="0.18"/>
+  <path clip-path="url(#c5)" d="M10,24 C16,11 28,11 34,24 C40,37 52,37 58,24 C64,11 76,11 82,24 C88,37 100,37 106,24 C112,11 124,11 130,24" fill="none" stroke="#ff2d87" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Nodes -->
+  <circle cx="34"  cy="24" r="8.5" fill="#080c18" stroke="#00e5ff" stroke-width="0.7"/>
+  <text x="34"  y="28" font-family="monospace" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">T</text>
+
+  <circle cx="58"  cy="24" r="8.5" fill="#080c18" stroke="#ff2d87" stroke-width="0.7"/>
+  <text x="58"  y="28" font-family="monospace" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">N</text>
+
+  <circle cx="82"  cy="24" r="8.5" fill="#080c18" stroke="#00e5ff" stroke-width="0.7"/>
+  <text x="82"  y="28" font-family="monospace" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">E</text>
+
+  <circle cx="106" cy="24" r="8.5" fill="#080c18" stroke="#ff2d87" stroke-width="0.7"/>
+  <text x="106" y="28" font-family="monospace" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">P</text>
+
+  <!-- Cursor + .XYZ tight -->
+  <text x="133" y="29" font-family="monospace" font-size="10" fill="#ff2d87" opacity="0.8">›</text>
+  <text x="143" y="29" font-family="monospace" font-size="10" fill="#ff2d87">.XYZ</text>
+</svg>

@@ -15,6 +15,10 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "The Never Ending Prompt",
   description: "A daily community game for AI image generation. One prompt, infinite mutations.",
+  icons: {
+    icon: "/logo/favicon-32.png",
+    apple: "/logo/apple-icon.png",
+  },
 };
 
 export default function RootLayout({

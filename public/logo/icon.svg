@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72">
+  <defs>
+    <clipPath id="i1"><rect x="4"  y="0" width="14" height="72"/></clipPath>
+    <clipPath id="i2"><rect x="18" y="0" width="14" height="72"/></clipPath>
+    <clipPath id="i3"><rect x="32" y="0" width="14" height="72"/></clipPath>
+    <clipPath id="i4"><rect x="46" y="0" width="14" height="72"/></clipPath>
+    <clipPath id="i5"><rect x="60" y="0" width="14" height="72"/></clipPath>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="72" height="72" rx="16" fill="#080c18"/>
+
+  <!-- hp=14, cy=36, amp=20 — crossings at 4,18,32,46,60,74 — nodes at 18·32·46·60 -->
+
+  <!-- Zone 1: B front -->
+  <path clip-path="url(#i1)" d="M4,36 C8,56 14,56 18,36 C22,16 28,16 32,36 C36,56 42,56 46,36 C50,16 56,16 60,36 C64,56 70,56 74,36" fill="none" stroke="#00e5ff" stroke-width="2.5" opacity="0.18"/>
+  <path clip-path="url(#i1)" d="M4,36 C8,16 14,16 18,36 C22,56 28,56 32,36 C36,16 42,16 46,36 C50,56 56,56 60,36 C64,16 70,16 74,36" fill="none" stroke="#ff2d87" stroke-width="2.5" filter="url(#glow)"/>
+
+  <!-- Zone 2: A front -->
+  <path clip-path="url(#i2)" d="M4,36 C8,16 14,16 18,36 C22,56 28,56 32,36 C36,16 42,16 46,36 C50,56 56,56 60,36 C64,16 70,16 74,36" fill="none" stroke="#ff2d87" stroke-width="2.5" opacity="0.18"/>
+  <path clip-path="url(#i2)" d="M4,36 C8,56 14,56 18,36 C22,16 28,16 32,36 C36,56 42,56 46,36 C50,16 56,16 60,36 C64,56 70,56 74,36" fill="none" stroke="#00e5ff" stroke-width="2.5" filter="url(#glow)"/>
+
+  <!-- Zone 3: B front -->
+  <path clip-path="url(#i3)" d="M4,36 C8,56 14,56 18,36 C22,16 28,16 32,36 C36,56 42,56 46,36 C50,16 56,16 60,36 C64,56 70,56 74,36" fill="none" stroke="#00e5ff" stroke-width="2.5" opacity="0.18"/>
+  <path clip-path="url(#i3)" d="M4,36 C8,16 14,16 18,36 C22,56 28,56 32,36 C36,16 42,16 46,36 C50,56 56,56 60,36 C64,16 70,16 74,36" fill="none" stroke="#ff2d87" stroke-width="2.5" filter="url(#glow)"/>
+
+  <!-- Zone 4: A front -->
+  <path clip-path="url(#i4)" d="M4,36 C8,16 14,16 18,36 C22,56 28,56 32,36 C36,16 42,16 46,36 C50,56 56,56 60,36 C64,16 70,16 74,36" fill="none" stroke="#ff2d87" stroke-width="2.5" opacity="0.18"/>
+  <path clip-path="url(#i4)" d="M4,36 C8,56 14,56 18,36 C22,16 28,16 32,36 C36,56 42,56 46,36 C50,16 56,16 60,36 C64,56 70,56 74,36" fill="none" stroke="#00e5ff" stroke-width="2.5" filter="url(#glow)"/>
+
+  <!-- Zone 5: B front -->
+  <path clip-path="url(#i5)" d="M4,36 C8,56 14,56 18,36 C22,16 28,16 32,36 C36,56 42,56 46,36 C50,16 56,16 60,36 C64,56 70,56 74,36" fill="none" stroke="#00e5ff" stroke-width="2.5" opacity="0.18"/>
+  <path clip-path="url(#i5)" d="M4,36 C8,16 14,16 18,36 C22,56 28,56 32,36 C36,16 42,16 46,36 C50,56 56,56 60,36 C64,16 70,16 74,36" fill="none" stroke="#ff2d87" stroke-width="2.5" filter="url(#glow)"/>
+
+  <!-- Crossing nodes — colored dots, no text (legible at small render sizes) -->
+  <circle cx="18" cy="36" r="5" fill="#080c18" stroke="#00e5ff" stroke-width="1.2"/>
+  <circle cx="18" cy="36" r="2" fill="#00e5ff" opacity="0.9" filter="url(#glow)"/>
+
+  <circle cx="32" cy="36" r="5" fill="#080c18" stroke="#ff2d87" stroke-width="1.2"/>
+  <circle cx="32" cy="36" r="2" fill="#ff2d87" opacity="0.9" filter="url(#glow)"/>
+
+  <circle cx="46" cy="36" r="5" fill="#080c18" stroke="#00e5ff" stroke-width="1.2"/>
+  <circle cx="46" cy="36" r="2" fill="#00e5ff" opacity="0.9" filter="url(#glow)"/>
+
+  <circle cx="60" cy="36" r="5" fill="#080c18" stroke="#ff2d87" stroke-width="1.2"/>
+  <circle cx="60" cy="36" r="2" fill="#ff2d87" opacity="0.9" filter="url(#glow)"/>
+</svg>

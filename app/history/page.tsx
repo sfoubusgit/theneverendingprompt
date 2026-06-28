@@ -22,11 +22,12 @@ export default async function HistoryPage() {
     <main className="min-h-screen bg-black text-[#f0f0f0]">
       <div className="max-w-2xl mx-auto px-4 py-8">
 
-        <header className="mb-10 pt-2">
+        <header className="mb-10 pt-2 flex items-center justify-between">
+          <a href="/">
+            <img src="/logo/compact.svg" alt="The Never Ending Prompt" className="h-8 w-auto" />
+          </a>
           <a href="/" className="font-mono text-xs text-cyan-800 hover:text-cyan-500 transition-colors">← back</a>
         </header>
-
-        <p className="font-mono text-xs text-cyan-700 mb-1">theneverendingprompt.xyz</p>
         <p className="font-mono text-2xl text-white mb-8">$ git log</p>
 
         <p className="font-mono text-xs text-cyan-700 mb-6">

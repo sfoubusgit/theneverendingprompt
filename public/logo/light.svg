@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 68" width="300" height="68">
+  <defs>
+    <clipPath id="lz1"><rect x="14" y="0" width="29" height="68"/></clipPath>
+    <clipPath id="lz2"><rect x="43" y="0" width="29" height="68"/></clipPath>
+    <clipPath id="lz3"><rect x="72" y="0" width="29" height="68"/></clipPath>
+    <clipPath id="lz4"><rect x="101" y="0" width="29" height="68"/></clipPath>
+    <clipPath id="lz5"><rect x="130" y="0" width="29" height="68"/></clipPath>
+    <filter id="lglow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="300" height="68" fill="#f5f6fa"/>
+
+  <!-- Same geometry as primary, darker palette for light bg -->
+  <!-- Strand A: #0099bb (deep cyan) · Strand B: #cc1560 (deep pink) -->
+
+  <!-- Zone 1: B front -->
+  <path clip-path="url(#lz1)" d="M14,32 C21,49 36,49 43,32 C50,15 65,15 72,32 C79,49 94,49 101,32 C108,15 123,15 130,32 C137,49 152,49 159,32" fill="none" stroke="#0099bb" stroke-width="2.5" opacity="0.2"/>
+  <path clip-path="url(#lz1)" d="M14,32 C21,15 36,15 43,32 C50,49 65,49 72,32 C79,15 94,15 101,32 C108,49 123,49 130,32 C137,15 152,15 159,32" fill="none" stroke="#cc1560" stroke-width="2.5" filter="url(#lglow)"/>
+
+  <!-- Zone 2: A front -->
+  <path clip-path="url(#lz2)" d="M14,32 C21,15 36,15 43,32 C50,49 65,49 72,32 C79,15 94,15 101,32 C108,49 123,49 130,32 C137,15 152,15 159,32" fill="none" stroke="#cc1560" stroke-width="2.5" opacity="0.2"/>
+  <path clip-path="url(#lz2)" d="M14,32 C21,49 36,49 43,32 C50,15 65,15 72,32 C79,49 94,49 101,32 C108,15 123,15 130,32 C137,49 152,49 159,32" fill="none" stroke="#0099bb" stroke-width="2.5" filter="url(#lglow)"/>
+
+  <!-- Zone 3: B front -->
+  <path clip-path="url(#lz3)" d="M14,32 C21,49 36,49 43,32 C50,15 65,15 72,32 C79,49 94,49 101,32 C108,15 123,15 130,32 C137,49 152,49 159,32" fill="none" stroke="#0099bb" stroke-width="2.5" opacity="0.2"/>
+  <path clip-path="url(#lz3)" d="M14,32 C21,15 36,15 43,32 C50,49 65,49 72,32 C79,15 94,15 101,32 C108,49 123,49 130,32 C137,15 152,15 159,32" fill="none" stroke="#cc1560" stroke-width="2.5" filter="url(#lglow)"/>
+
+  <!-- Zone 4: A front -->
+  <path clip-path="url(#lz4)" d="M14,32 C21,15 36,15 43,32 C50,49 65,49 72,32 C79,15 94,15 101,32 C108,49 123,49 130,32 C137,15 152,15 159,32" fill="none" stroke="#cc1560" stroke-width="2.5" opacity="0.2"/>
+  <path clip-path="url(#lz4)" d="M14,32 C21,49 36,49 43,32 C50,15 65,15 72,32 C79,49 94,49 101,32 C108,15 123,15 130,32 C137,49 152,49 159,32" fill="none" stroke="#0099bb" stroke-width="2.5" filter="url(#lglow)"/>
+
+  <!-- Zone 5: B front -->
+  <path clip-path="url(#lz5)" d="M14,32 C21,49 36,49 43,32 C50,15 65,15 72,32 C79,49 94,49 101,32 C108,15 123,15 130,32 C137,49 152,49 159,32" fill="none" stroke="#0099bb" stroke-width="2.5" opacity="0.2"/>
+  <path clip-path="url(#lz5)" d="M14,32 C21,15 36,15 43,32 C50,49 65,49 72,32 C79,15 94,15 101,32 C108,49 123,49 130,32 C137,15 152,15 159,32" fill="none" stroke="#cc1560" stroke-width="2.5" filter="url(#lglow)"/>
+
+  <!-- Nodes -->
+  <circle cx="43"  cy="32" r="10.5" fill="#f5f6fa" stroke="#0099bb" stroke-width="0.8"/>
+  <text x="43"  y="36.5" font-family="monospace" font-size="11" fill="#0d1030" text-anchor="middle" font-weight="bold">T</text>
+
+  <circle cx="72"  cy="32" r="10.5" fill="#f5f6fa" stroke="#cc1560" stroke-width="0.8"/>
+  <text x="72"  y="36.5" font-family="monospace" font-size="11" fill="#0d1030" text-anchor="middle" font-weight="bold">N</text>
+
+  <circle cx="101" cy="32" r="10.5" fill="#f5f6fa" stroke="#0099bb" stroke-width="0.8"/>
+  <text x="101" y="36.5" font-family="monospace" font-size="11" fill="#0d1030" text-anchor="middle" font-weight="bold">E</text>
+
+  <circle cx="130" cy="32" r="10.5" fill="#f5f6fa" stroke="#cc1560" stroke-width="0.8"/>
+  <text x="130" y="36.5" font-family="monospace" font-size="11" fill="#0d1030" text-anchor="middle" font-weight="bold">P</text>
+
+  <!-- Cursor -->
+  <text x="163" y="37" font-family="monospace" font-size="12" fill="#cc1560" opacity="0.75">›</text>
+
+  <!-- .XYZ -->
+  <text x="175" y="37" font-family="monospace" font-size="12" fill="#cc1560" letter-spacing="0.5">.XYZ</text>
+
+  <!-- Tagline -->
+  <text x="14" y="54" font-family="monospace" font-size="7.5" fill="#0d103060" letter-spacing="2.5">THE NEVER ENDING PROMPT</text>
+
+  <!-- Slogan -->
+  <text x="14" y="64" font-family="monospace" font-size="6.5" fill="#0d103030" letter-spacing="2">THE PROMPT NEVER DIES.</text>
+</svg>
