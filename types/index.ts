@@ -13,6 +13,7 @@ export type Submission = {
   round_id: string
   prompt: string
   submitter_name: string
+  mutation_type?: 'extend' | 'mutate' | 'preserve' | null
   created_at: string
   vote_count?: number
 }
@@ -23,4 +24,14 @@ export type Vote = {
   submission_id: string
   voter_id: string
   created_at: string
+}
+
+export type ChainRound = {
+  id: string
+  prompt: string
+  image_url: string | null
+  closed_at: string | null
+  winner_submission_id: string | null
+  winner_mutation_type?: 'extend' | 'mutate' | 'preserve' | null
+  roundNum: number
 }

@@ -1,8 +1,6 @@
 import { supabase } from '@/lib/supabase'
-import { Submission } from '@/types'
-import RoundClient from '@/components/RoundClient'
-import HowItWorksToggle from '@/components/HowItWorksToggle'
-import ImageLightbox from '@/components/ImageLightbox'
+import { Submission, ChainRound } from '@/types'
+import HomeClient from '@/components/HomeClient'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +19,7 @@ async function getSubmissionsWithCounts(roundId: string): Promise<Submission[]> 
 }
 
 export default async function Home() {
+  // Active round
   const { data: round } = await supabase
     .from('rounds')
     .select('*')
@@ -28,170 +27,70 @@ export default async function Home() {
     .limit(1)
     .single()
 
-  const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-  const { data: pastRounds } = await supabase
-    .from('rounds')
-    .select('id, prompt, image_url, closed_at, winner_submission_id, submissions(id, prompt)')
-    .eq('status', 'closed')
-    .gte('closed_at', oneMonthAgo)
-    .order('closed_at', { ascending: false })
-
-  const { data: originRound } = await supabase
-    .from('rounds')
-    .select('id, prompt, image_url, created_at')
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .single()
-
-  const { count: roundNumber } = await supabase
-    .from('rounds')
-    .select('*', { count: 'exact', head: true })
-
   if (!round) {
     return (
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="font-mono text-zinc-500">$ no active round. check back soon.</p>
+      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: 'var(--t4)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.1em' }}>
+          $ no active round. check back soon.
+        </p>
       </main>
     )
   }
 
+  // Total round count
+  const { count: roundCount } = await supabase
+    .from('rounds')
+    .select('*', { count: 'exact', head: true })
+
+  const roundNumber = roundCount ?? 1
+
+  // Active round submissions with vote counts
   const submissions = await getSubmissionsWithCounts(round.id)
-  const hoursOpen = Math.max(0, Math.floor((Date.now() - new Date(round.created_at).getTime()) / 3600000))
-  const roundLabel = `ROUND_${String(roundNumber ?? 1).padStart(3, '0')}`
+
+  // Chain rounds: last 10 closed (for sidebar + full chain panel)
+  const { data: rawChain } = await supabase
+    .from('rounds')
+    .select('id, prompt, image_url, closed_at, winner_submission_id, submissions(id, mutation_type)')
+    .eq('status', 'closed')
+    .order('closed_at', { ascending: false })
+    .limit(10)
+
+  const chainRounds: ChainRound[] = (rawChain ?? []).map((r: any, i: number) => {
+    const winnerSub = (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)
+    return {
+      id: r.id,
+      prompt: r.prompt,
+      image_url: r.image_url ?? null,
+      closed_at: r.closed_at ?? null,
+      winner_submission_id: r.winner_submission_id ?? null,
+      winner_mutation_type: winnerSub?.mutation_type ?? null,
+      roundNum: roundNumber - 1 - i,
+    }
+  })
+
+  // Previous round for yesterday strip
+  const prevRoundData = chainRounds[0] ?? null
+  const prevSubmissions: Submission[] = prevRoundData
+    ? await getSubmissionsWithCounts(prevRoundData.id)
+    : []
+
+  const prevRound = prevRoundData
+    ? {
+        id: prevRoundData.id,
+        prompt: prevRoundData.prompt,
+        closed_at: prevRoundData.closed_at,
+        winner_submission_id: prevRoundData.winner_submission_id,
+      }
+    : null
 
   return (
-    <main className="min-h-screen bg-black text-[#f0f0f0]">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-
-        {/* Terminal header */}
-        <header className="mb-10 pt-2 flex items-center justify-between">
-          <a href="/" className="font-mono text-sm font-bold tracking-tight cursor select-none">
-            <span className="text-[#ff2d87]">›</span>
-            <span className="text-[#00e5ff]">T</span>
-            <span className="text-white opacity-30">·</span>
-            <span className="text-[#ff2d87]">N</span>
-            <span className="text-white opacity-30">·</span>
-            <span className="text-[#00e5ff]">E</span>
-            <span className="text-white opacity-30">·</span>
-            <span className="text-[#ff2d87]">P</span>
-            <span className="text-white opacity-40">.XYZ</span>
-          </a>
-          <div className="flex items-center gap-2">
-            <a
-              href="https://www.instagram.com/theneverendingprompt.xyz/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-xs inline-flex items-center gap-1.5 border border-cyan-900 text-cyan-400 hover:border-cyan-400 hover:text-cyan-200 px-3 py-1.5 transition-colors"
-              aria-label="Follow on Instagram"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                <circle cx="12" cy="12" r="4"/>
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-              </svg>
-              follow
-            </a>
-            <a
-              href="/history"
-              className="font-mono text-xs inline-flex items-center border border-cyan-900 text-cyan-400 hover:border-cyan-400 hover:text-cyan-200 px-3 py-1.5 transition-colors"
-            >
-              $ history
-            </a>
-            <HowItWorksToggle />
-          </div>
-        </header>
-
-        {/* Prompt */}
-        <section className="mb-10">
-          <p className="font-mono text-xs text-cyan-700 mb-3 uppercase tracking-widest">{roundLabel} · {round.status === 'open' ? 'open' : 'closed'}</p>
-
-          <div className="flex items-start gap-4 mb-3">
-            {round.image_url && (
-              <ImageLightbox
-                src={round.image_url}
-                alt="Round image"
-                thumbnailClassName="w-20 h-20 object-cover flex-shrink-0 border border-zinc-800 cursor-pointer hover:border-cyan-700 transition-colors mt-0.5"
-              />
-            )}
-            <p className="font-mono text-xl md:text-2xl text-white leading-snug">
-              "{round.prompt}"
-            </p>
-          </div>
-
-          <p className="font-mono text-xs text-zinc-600">
-            {round.status === 'open'
-              ? `[${submissions.length} submission${submissions.length !== 1 ? 's' : ''} · opened ${hoursOpen}h ago]`
-              : '[round closed — winner selected]'}
-          </p>
-        </section>
-
-        {/* Submit + Vote */}
-        <section className="mb-10">
-          <RoundClient
-            roundId={round.id}
-            currentPrompt={round.prompt}
-            submissions={submissions}
-            closed={round.status === 'closed'}
-            winnerId={round.winner_submission_id}
-          />
-        </section>
-
-        {/* Chain history — git log style */}
-        {((pastRounds && pastRounds.length > 0) || originRound) && (
-          <section className="mb-10">
-            <p className="font-mono text-xs text-cyan-700 mb-5">// CHAIN HISTORY</p>
-            <div className="relative">
-              {/* Vertical connecting line */}
-              <div className="absolute left-[5px] top-2 bottom-2 w-px bg-cyan-950" />
-
-              <div className="space-y-5 pl-6">
-                {(pastRounds ?? []).map((r: any) => {
-                  const winner = (r.submissions ?? []).find((s: any) => s.id === r.winner_submission_id)
-                  const hash = r.id.slice(0, 6)
-                  return (
-                    <div key={r.id} className="relative">
-                      {/* * dot */}
-                      <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-cyan-700 bg-black" />
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-mono text-[10px] text-zinc-500 mb-1">
-                            {hash} · {new Date(r.closed_at).toLocaleDateString('en-GB').replace(/\//g, '.')}
-                          </p>
-                          <p className="font-mono text-xs text-zinc-400 line-clamp-1">"{r.prompt}"</p>
-                          {winner && (
-                            <>
-                              <p className="font-mono text-[10px] text-cyan-800 my-0.5 ml-2">↓</p>
-                              <p className="font-mono text-xs text-cyan-200 line-clamp-1 ml-2">"{winner.prompt}"</p>
-                            </>
-                          )}
-                        </div>
-                        {r.image_url && (
-                          <ImageLightbox src={r.image_url} />
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-
-                {originRound && !(pastRounds ?? []).some((r: any) => r.id === originRound.id) && (
-                  <div className="relative">
-                    <div className="absolute -left-6 top-[5px] w-[11px] h-[11px] border border-cyan-900 bg-black" />
-                    <p className="font-mono text-[10px] text-zinc-500 mb-1">
-                      {originRound.id.slice(0, 6)} · {new Date(originRound.created_at).toLocaleDateString('en-GB').replace(/\//g, '.')} · [origin]
-                    </p>
-                    <p className="font-mono text-xs text-zinc-400">"{originRound.prompt}"</p>
-                  </div>
-                )}
-              </div>
-            </div>
-            <a href="/history" className="font-mono text-[10px] text-cyan-800 hover:text-cyan-500 transition-colors mt-4 inline-block">
-              $ view full history →
-            </a>
-          </section>
-        )}
-
-
-      </div>
-    </main>
+    <HomeClient
+      round={round}
+      roundNumber={roundNumber}
+      submissions={submissions}
+      chainRounds={chainRounds}
+      prevRound={prevRound}
+      prevSubmissions={prevSubmissions}
+    />
   )
 }

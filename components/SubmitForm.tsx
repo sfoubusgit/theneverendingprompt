@@ -3,6 +3,11 @@
 import { useState } from 'react'
 import { Submission } from '@/types'
 
+const MUTATION_TYPES = [
+  { value: 'mutate', label: 'Mutate' },
+  { value: 'extend', label: 'Extend' },
+]
+
 export default function SubmitForm({
   roundId,
   currentPrompt,
@@ -12,13 +17,15 @@ export default function SubmitForm({
   currentPrompt: string
   onSubmitted: (submission: Submission) => void
 }) {
-  const [prompt, setPrompt] = useState(currentPrompt)
+  const [prompt, setPrompt] = useState('')
   const [name, setName] = useState('')
+  const [mutationType, setMutationType] = useState<'mutate' | 'extend'>('mutate')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const [submittedText, setSubmittedText] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError(null)
@@ -32,7 +39,13 @@ export default function SubmitForm({
     const res = await fetch('/api/submissions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ round_id: roundId, prompt, submitter_name: name, voter_id }),
+      body: JSON.stringify({
+        round_id: roundId,
+        prompt: prompt.trim(),
+        submitter_name: name.trim() || 'anonymous',
+        voter_id,
+        mutation_type: mutationType,
+      }),
     })
 
     const data = await res.json()
@@ -43,6 +56,7 @@ export default function SubmitForm({
       return
     }
 
+    setSubmittedText(prompt.trim())
     onSubmitted({ ...data, vote_count: 0 })
     setDone(true)
     setLoading(false)
@@ -50,52 +64,125 @@ export default function SubmitForm({
 
   if (done) {
     return (
-      <div className="font-mono text-sm text-cyan-600 py-4">
-        [ok] submitted. scroll down to vote.
+      <div style={{
+        background: 'rgba(250,204,21,.025)',
+        border: '1px solid rgba(250,204,21,.22)',
+        borderLeft: '2px solid rgba(250,204,21,.55)',
+        borderRadius: 4, padding: '16px 18px',
+        animation: 'rise .25s ease both'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
+          <span style={{ color: 'var(--lamp)' }}>✓</span>
+          <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--lamp)' }}>
+            mutation queued
+          </span>
+          <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--t4)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
+            scroll up to vote
+          </span>
+        </div>
+        <div style={{
+          fontFamily: 'Georgia, serif', fontSize: 14, fontStyle: 'italic',
+          color: 'var(--amber)', lineHeight: 1.5,
+          borderLeft: '2px solid rgba(212,201,178,.13)', paddingLeft: 12, marginBottom: 10
+        }}>
+          "{submittedText}"
+        </div>
+        <p style={{ fontSize: 11, color: 'var(--t3)', marginBottom: 12 }}>
+          Reviewed before next round opens.
+        </p>
+        <button
+          onClick={() => { setDone(false); setPrompt(''); setError(null) }}
+          style={{
+            fontFamily: 'inherit', fontSize: 10, textTransform: 'uppercase', letterSpacing: '.1em',
+            color: 'var(--t4)', background: 'none', border: 'none', cursor: 'pointer',
+            padding: 0, transition: 'color .12s'
+          }}
+        >
+          // write another →
+        </button>
       </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div>
-        <div className="flex justify-between mb-1">
-          <span className="font-mono text-xs text-cyan-700">&gt; your mutation</span>
-          <span className={`font-mono text-xs ${prompt.length > 230 ? prompt.length >= 250 ? 'text-red-400' : 'text-yellow-500' : 'text-cyan-800'}`}>
-            [{prompt.length}/250]
-          </span>
-        </div>
-        <textarea
-          value={prompt}
-          onChange={e => setPrompt(e.target.value)}
-          rows={3}
-          required
-          maxLength={250}
-          className="w-full bg-zinc-950 border border-cyan-900 px-3 py-2 text-sm text-white font-mono resize-none focus:outline-none focus:border-cyan-500 transition-colors"
-          placeholder="mutate the prompt..."
-        />
+    <form onSubmit={handleSubmit}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+        {MUTATION_TYPES.map(t => {
+          const active = mutationType === t.value
+          const isExt = t.value === 'extend'
+          return (
+            <button
+              key={t.value}
+              type="button"
+              onClick={() => setMutationType(t.value as typeof mutationType)}
+              style={{
+                fontFamily: 'inherit', fontSize: 9, textTransform: 'uppercase', letterSpacing: '.09em',
+                padding: '4px 10px', borderRadius: 2, border: '1px solid',
+                cursor: 'pointer', transition: 'all .12s',
+                color: active ? (isExt ? 'var(--cyan)' : 'var(--pink)') : 'var(--t3)',
+                borderColor: active ? (isExt ? 'var(--cT3)' : 'var(--pT3)') : 'var(--div)',
+                background: active ? (isExt ? 'var(--cT1)' : 'var(--pT1)') : 'none',
+              } as React.CSSProperties}
+            >
+              {t.label}
+            </button>
+          )
+        })}
       </div>
 
-      <div>
-        <span className="font-mono text-xs text-cyan-700 block mb-1">&gt; your name</span>
+      <textarea
+        value={prompt}
+        onChange={e => setPrompt(e.target.value)}
+        rows={3}
+        required
+        maxLength={250}
+        placeholder="Write your mutation of the prompt…"
+        style={{
+          width: '100%', background: 'var(--surf)', border: '1px solid var(--div)',
+          borderRadius: 4, color: 'var(--t1)',
+          fontFamily: 'Georgia, serif', fontSize: 14, lineHeight: 1.55,
+          padding: '12px 14px', resize: 'none', height: 88, outline: 'none',
+          transition: 'border-color .13s'
+        }}
+        onFocus={e => (e.currentTarget.style.borderColor = 'rgba(255,45,135,.35)')}
+        onBlur={e => (e.currentTarget.style.borderColor = 'var(--div)')}
+      />
+
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
+        <span style={{ fontSize: 10, color: 'var(--t4)', fontVariantNumeric: 'tabular-nums' }}>
+          {prompt.length} / 250
+        </span>
         <input
           value={name}
           onChange={e => setName(e.target.value)}
-          required
-          className="w-full bg-zinc-950 border border-cyan-900 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-cyan-500 transition-colors"
-          placeholder="anonymous"
+          placeholder="your name (optional)"
+          style={{
+            flex: 1, background: 'var(--surf)', border: '1px solid var(--div)',
+            borderRadius: 4, color: 'var(--t1)', fontFamily: 'inherit',
+            fontSize: 12, padding: '9px 12px', outline: 'none',
+            transition: 'border-color .13s'
+          }}
+          onFocus={e => (e.currentTarget.style.borderColor = 'rgba(255,45,135,.25)')}
+          onBlur={e => (e.currentTarget.style.borderColor = 'var(--div)')}
         />
+        <button
+          type="submit"
+          disabled={loading || !prompt.trim()}
+          style={{
+            fontFamily: 'inherit', fontSize: 10, textTransform: 'uppercase', letterSpacing: '.1em',
+            color: 'var(--pink)', border: '1px solid var(--pT3)', background: 'none',
+            borderRadius: 4, padding: '9px 18px', cursor: 'pointer',
+            transition: 'background .13s', flexShrink: 0,
+            opacity: loading || !prompt.trim() ? .4 : 1
+          }}
+        >
+          {loading ? '…' : '[submit mutation]'}
+        </button>
       </div>
 
-      {error && <p className="font-mono text-xs text-red-400">[error] {error}</p>}
-
-      <button
-        type="submit"
-        disabled={loading || !prompt.trim() || !name.trim()}
-        className="w-full border border-pink-500 text-pink-400 font-mono text-sm py-2.5 hover:bg-pink-950 hover:border-pink-400 hover:text-pink-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-      >
-        {loading ? '$ submitting...' : '[SUBMIT]'}
-      </button>
+      {error && (
+        <p style={{ fontSize: 11, color: '#f87171', marginTop: 8 }}>[error] {error}</p>
+      )}
     </form>
   )
 }

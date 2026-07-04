@@ -17,9 +17,15 @@ create table submissions (
   id uuid default gen_random_uuid() primary key,
   round_id uuid references rounds(id) not null,
   prompt text not null,
-  submitter_name text not null,
+  submitter_name text not null default 'anonymous',
+  voter_id text,
+  mutation_type text check (mutation_type in ('extend', 'mutate', 'preserve')),
   created_at timestamptz default now()
 );
+
+-- Migration (run if submissions table already exists):
+-- alter table submissions add column if not exists voter_id text;
+-- alter table submissions add column if not exists mutation_type text check (mutation_type in ('extend', 'mutate', 'preserve'));
 
 -- Votes: one per voter per round (voter_id = localStorage UUID)
 create table votes (

@@ -2,9 +2,9 @@ import { supabase } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  const { round_id, prompt, submitter_name, voter_id } = await request.json()
+  const { round_id, prompt, submitter_name, voter_id, mutation_type } = await request.json()
 
-  if (!round_id || !prompt?.trim() || !submitter_name?.trim() || !voter_id) {
+  if (!round_id || !prompt?.trim() || !voter_id) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
@@ -33,9 +33,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'You already submitted this round' }, { status: 400 })
   }
 
+  const insertData: Record<string, unknown> = {
+    round_id,
+    prompt: prompt.trim(),
+    submitter_name: (submitter_name?.trim() || 'anonymous'),
+    voter_id,
+  }
+  if (mutation_type && ['extend', 'mutate', 'preserve'].includes(mutation_type)) {
+    insertData.mutation_type = mutation_type
+  }
+
   const { data, error } = await supabase
     .from('submissions')
-    .insert({ round_id, prompt: prompt.trim(), submitter_name: submitter_name.trim(), voter_id })
+    .insert(insertData)
     .select()
     .single()
 

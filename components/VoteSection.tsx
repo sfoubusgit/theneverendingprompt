@@ -12,42 +12,73 @@ function getVoterId(): string {
   return id
 }
 
+function typeStyle(mt: string | null | undefined, voted: boolean) {
+  if (voted) return {
+    tagColor: 'var(--lamp)',
+    tagBorder: 'rgba(250,204,21,.4)',
+    tagBg: 'var(--lT1)',
+    fillColor: 'var(--lamp)',
+    btnColor: 'var(--lamp)',
+    btnBorder: 'rgba(250,204,21,.4)',
+    btnBg: 'var(--lT1)',
+  }
+  if (mt === 'extend') return {
+    tagColor: 'var(--cyan)', tagBorder: 'var(--cT3)', tagBg: 'var(--cT1)',
+    fillColor: 'var(--cyan)',
+    btnColor: 'var(--cyan)', btnBorder: 'var(--cT3)', btnBg: 'none',
+  }
+  if (mt === 'preserve') return {
+    tagColor: 'var(--t3)', tagBorder: 'var(--div)', tagBg: 'transparent',
+    fillColor: 'rgba(240,240,240,.28)',
+    btnColor: 'var(--t3)', btnBorder: 'var(--div)', btnBg: 'none',
+  }
+  return {
+    tagColor: 'var(--pink)', tagBorder: 'var(--pT3)', tagBg: 'var(--pT1)',
+    fillColor: 'var(--pink)',
+    btnColor: 'var(--pink)', btnBorder: 'var(--pT3)', btnBg: 'none',
+  }
+}
+
 export default function VoteSection({
   submissions,
   roundId,
   closed,
   winnerId,
+  roundNum,
 }: {
   submissions: Submission[]
   roundId: string
   closed: boolean
   winnerId: string | null
+  roundNum?: number
 }) {
   const [myVote, setMyVote] = useState<string | null>(null)
   const [counts, setCounts] = useState<Record<string, number>>(
     Object.fromEntries(submissions.map(s => [s.id, s.vote_count ?? 0]))
   )
   const [voting, setVoting] = useState(false)
+  const [votedSub, setVotedSub] = useState<Submission | null>(null)
 
   useEffect(() => {
     const voterId = getVoterId()
     fetch(`/api/votes/mine?round_id=${roundId}&voter_id=${voterId}`)
       .then(r => r.json())
-      .then(data => { if (data.submission_id) setMyVote(data.submission_id) })
+      .then(data => {
+        if (data.submission_id) {
+          setMyVote(data.submission_id)
+          setVotedSub(submissions.find(s => s.id === data.submission_id) ?? null)
+        }
+      })
   }, [roundId])
 
   async function vote(submissionId: string) {
-    if (voting || closed) return
+    if (voting || myVote || closed) return
     const voterId = getVoterId()
-    const prev = myVote
+    const sub = submissions.find(s => s.id === submissionId) ?? null
 
     setMyVote(submissionId)
-    setCounts(c => {
-      const next = { ...c }
-      if (prev) next[prev] = Math.max(0, (next[prev] ?? 0) - 1)
-      next[submissionId] = (next[submissionId] ?? 0) + 1
-      return next
-    })
+    setVotedSub(sub)
+    setCounts(c => ({ ...c, [submissionId]: (c[submissionId] ?? 0) + 1 }))
 
     setVoting(true)
     await fetch('/api/votes', {
@@ -59,54 +90,149 @@ export default function VoteSection({
   }
 
   const sorted = [...submissions].sort((a, b) => (counts[b.id] ?? 0) - (counts[a.id] ?? 0))
-  const maxVotes = Math.max(...Object.values(counts), 1)
+  const totalVotes = Object.values(counts).reduce((a, b) => a + b, 0)
+  const leaderId = sorted[0]?.id
+  const nextNum = roundNum ? String(roundNum + 1).padStart(3, '0') : '???'
 
   if (submissions.length === 0) {
-    return <p className="font-mono text-xs text-cyan-800 py-4">$ no submissions yet. be first.</p>
+    return (
+      <p style={{ color: 'var(--t4)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.1em', padding: '16px 0' }}>
+        No mutations yet. Be first →
+      </p>
+    )
   }
 
   return (
-    <div className="space-y-2">
-      {sorted.map(s => {
-        const count = counts[s.id] ?? 0
-        const isMyVote = myVote === s.id
-        const isWinner = winnerId === s.id
+    <div>
+      {myVote && !closed && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 12,
+          background: '#060509',
+          borderBottom: '1px solid rgba(250,204,21,.18)',
+          borderLeft: '3px solid var(--lamp)',
+          padding: '0 20px', height: 36, borderRadius: 3,
+          fontSize: 11, textTransform: 'uppercase', letterSpacing: '.09em',
+          marginBottom: 18, animation: 'slidedown .3s ease both'
+        }}>
+          <span style={{ color: 'var(--lamp)' }}>✓</span>
+          <span style={{ color: 'var(--lamp)' }}>voted{votedSub?.mutation_type ? ` — ${votedSub.mutation_type}` : ''}</span>
+          <span style={{ color: 'var(--t3)' }}>· mutation queued for round_{nextNum}</span>
+        </div>
+      )}
 
-        return (
-          <div
-            key={s.id}
-            onClick={() => vote(s.id)}
-            className={`relative border transition-colors ${
-              closed
-                ? isWinner
-                  ? 'border-pink-500 bg-pink-950/20'
-                  : 'border-zinc-800 bg-zinc-950 opacity-40'
-                : isMyVote
-                  ? 'border-pink-500 bg-pink-950/20 cursor-pointer'
-                  : 'border-zinc-800 bg-zinc-950 hover:border-cyan-800 cursor-pointer'
-            }`}
-          >
-            {/* Vote bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        fontSize: 9, textTransform: 'uppercase', letterSpacing: '.14em',
+        color: 'var(--t4)', padding: '14px 0 10px'
+      }}>
+        <span>// how should it evolve?</span>
+        <div style={{ flex: 1, height: 1, background: 'var(--div)' }} />
+        <span style={{ color: 'var(--t3)' }}>
+          {submissions.length} option{submissions.length !== 1 ? 's' : ''} · {totalVotes} votes
+        </span>
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+        gap: 12,
+        marginBottom: 24
+      }}>
+        {sorted.map(s => {
+          const count = counts[s.id] ?? 0
+          const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0
+          const isMyVote = myVote === s.id
+          const isWinner = closed && winnerId === s.id
+          const isDimmed = !!myVote && !isMyVote && !closed && !isWinner
+          const isLeader = !myVote && !closed && s.id === leaderId && totalVotes > 0
+          const ts = typeStyle(s.mutation_type, isMyVote || isWinner)
+
+          return (
             <div
-              className="absolute inset-0 bg-cyan-500/10 transition-all duration-500"
-              style={{ width: `${(count / maxVotes) * 100}%` }}
-            />
-
-            <div className="relative flex items-start gap-3 px-3 py-3">
-              <span className={`font-mono text-xs flex-shrink-0 w-8 pt-0.5 ${isMyVote && !closed ? 'text-pink-400' : 'text-cyan-700'}`}>
-                {isMyVote && !closed ? '[>]' : `[${count}]`}
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="font-mono text-sm text-white leading-relaxed">"{s.prompt}"</p>
-                <p className="font-mono text-xs text-zinc-500 mt-1">
-                  {s.submitter_name}
-                  {isWinner && <span className="ml-2 text-pink-400">[winner]</span>}
-                </p>
+              key={s.id}
+              onClick={() => vote(s.id)}
+              tabIndex={myVote || closed ? -1 : 0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vote(s.id) } }}
+              style={{
+                display: 'flex', flexDirection: 'column',
+                border: `1px solid ${isMyVote || isWinner ? 'rgba(250,204,21,.48)' : isLeader ? 'rgba(0,229,255,.27)' : 'var(--div)'}`,
+                borderRadius: 5,
+                background: isMyVote || isWinner ? 'rgba(250,204,21,.03)' : isLeader ? 'rgba(0,229,255,.022)' : 'transparent',
+                boxShadow: isMyVote || isWinner ? '0 0 24px -10px rgba(250,204,21,.22)' : 'none',
+                opacity: isDimmed ? .32 : 1,
+                cursor: myVote || closed ? 'default' : 'pointer',
+                transition: 'border-color .13s, background .13s',
+                outline: 'none',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 14px 8px' }}>
+                {s.mutation_type && (
+                  <span style={{
+                    fontSize: 9, textTransform: 'uppercase', letterSpacing: '.1em',
+                    padding: '2px 6px', borderRadius: 2, border: '1px solid', flexShrink: 0,
+                    color: ts.tagColor, borderColor: ts.tagBorder, background: ts.tagBg
+                  }}>
+                    {s.mutation_type}
+                  </span>
+                )}
+                {isLeader && (
+                  <span style={{ fontSize: 9, color: 'var(--lamp)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
+                    ↑ leading
+                  </span>
+                )}
+                <span style={{
+                  marginLeft: 'auto', fontSize: 12, fontVariantNumeric: 'tabular-nums',
+                  color: isMyVote || isWinner ? 'var(--lamp)' : 'var(--t3)'
+                }}>
+                  {pct}%
+                </span>
               </div>
+
+              <div style={{ height: 2, background: 'var(--t5)', margin: '0 14px 10px', borderRadius: 1, overflow: 'hidden' }}>
+                <div style={{
+                  height: '100%', borderRadius: 1,
+                  width: `${pct}%`, background: ts.fillColor,
+                  transition: 'width .5s ease'
+                }} />
+              </div>
+
+              <div style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '.12em', color: 'var(--t4)', padding: '0 14px 6px' }}>
+                ROUND_{nextNum} will read →
+              </div>
+
+              <div style={{
+                fontFamily: 'Georgia, serif',
+                fontSize: 'clamp(12px, 1.4vw, 15px)', lineHeight: 1.5,
+                color: isMyVote || isWinner ? 'rgba(240,240,240,.84)' : 'var(--t2)',
+                padding: '0 14px', flex: 1
+              }}>
+                "{s.prompt}"
+              </div>
+
+              {s.submitter_name && (
+                <div style={{ fontSize: 9, color: 'var(--t4)', padding: '4px 14px 0', textTransform: 'uppercase', letterSpacing: '.08em' }}>
+                  — {s.submitter_name}
+                </div>
+              )}
+
+              <button
+                onClick={e => { e.stopPropagation(); vote(s.id) }}
+                disabled={!!myVote || closed}
+                style={{
+                  display: 'block', margin: '12px 14px 14px',
+                  fontFamily: 'inherit', fontSize: 10, textTransform: 'uppercase', letterSpacing: '.1em',
+                  padding: 7, borderRadius: 3, border: `1px solid ${ts.btnBorder}`,
+                  background: ts.btnBg, color: ts.btnColor,
+                  cursor: myVote || closed ? 'default' : 'pointer',
+                  textAlign: 'center', transition: 'background .13s'
+                }}
+              >
+                {isMyVote || isWinner ? '✓ voted' : closed ? (isWinner ? '[winner]' : '[closed]') : '[vote]'}
+              </button>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
     </div>
   )
 }

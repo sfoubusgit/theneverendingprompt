@@ -1,23 +1,70 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-mono);
+:root {
+  --bg: #050508;
+  --surf: #0b0a10;
+  --warm: #08070c;
+  --t1: #f0f0f0;
+  --t2: rgba(240,240,240,.62);
+  --t3: rgba(240,240,240,.36);
+  --t4: rgba(240,240,240,.17);
+  --t5: rgba(240,240,240,.07);
+  --div: rgba(240,240,240,.08);
+  --divC: rgba(0,229,255,.11);
+  --cyan: #00e5ff;
+  --pink: #ff2d87;
+  --lamp: #facc15;
+  --amber: #d4c9b2;
+  --cT1: rgba(0,229,255,.08);
+  --cT3: rgba(0,229,255,.38);
+  --cT4: rgba(0,229,255,.55);
+  --pT1: rgba(255,45,135,.08);
+  --pT3: rgba(255,45,135,.38);
+  --pT4: rgba(255,45,135,.55);
+  --lT1: rgba(250,204,21,.07);
 }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); }
 
 body {
-  background: #000000;
-  color: #f0f0f0;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+@keyframes lamp {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(250,204,21,.9); }
+  50% { opacity: .45; box-shadow: 0 0 3px rgba(250,204,21,.4); }
+}
+@keyframes cur {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes slidedown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.lamp-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lamp);
+  flex-shrink: 0;
+  animation: lamp 2.2s ease-in-out infinite;
 }
 
 .cursor::after {
   content: '█';
-  animation: blink 1s step-end infinite;
-  margin-left: 2px;
-  color: #22d3ee;
+  animation: cur 1s step-end infinite;
+  color: var(--cyan);
 }
