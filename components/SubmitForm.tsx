@@ -18,12 +18,23 @@ export default function SubmitForm({
   onSubmitted: (submission: Submission) => void
 }) {
   const [prompt, setPrompt] = useState(currentPrompt)
+  const [extension, setExtension] = useState('')
   const [name, setName] = useState('')
   const [mutationType, setMutationType] = useState<'mutate' | 'extend'>('mutate')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [submittedText, setSubmittedText] = useState('')
   const [error, setError] = useState<string | null>(null)
+
+  const isExtend = mutationType === 'extend'
+  const finalPrompt = isExtend
+    ? `${currentPrompt} ${extension.trim()}`
+    : prompt.trim()
+  const charCount = isExtend
+    ? currentPrompt.length + 1 + extension.trim().length
+    : prompt.length
+  const extMaxLen = Math.max(1, 250 - currentPrompt.length - 1)
+  const canSubmit = isExtend ? extension.trim().length > 0 : prompt.trim().length > 0
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -41,7 +52,7 @@ export default function SubmitForm({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         round_id: roundId,
-        prompt: prompt.trim(),
+        prompt: finalPrompt,
         submitter_name: name.trim() || 'anonymous',
         voter_id,
         mutation_type: mutationType,
@@ -56,7 +67,7 @@ export default function SubmitForm({
       return
     }
 
-    setSubmittedText(prompt.trim())
+    setSubmittedText(finalPrompt)
     onSubmitted({ ...data, vote_count: 0 })
     setDone(true)
     setLoading(false)
@@ -91,7 +102,7 @@ export default function SubmitForm({
           Reviewed before next round opens.
         </p>
         <button
-          onClick={() => { setDone(false); setPrompt(''); setError(null) }}
+          onClick={() => { setDone(false); setPrompt(currentPrompt); setExtension(''); setError(null) }}
           style={{
             fontFamily: 'inherit', fontSize: 10, textTransform: 'uppercase', letterSpacing: '.1em',
             color: 'var(--t4)', background: 'none', border: 'none', cursor: 'pointer',
@@ -130,27 +141,80 @@ export default function SubmitForm({
         })}
       </div>
 
-      <textarea
-        value={prompt}
-        onChange={e => setPrompt(e.target.value)}
-        rows={3}
-        required
-        maxLength={250}
-        placeholder="Write your mutation of the prompt…"
-        style={{
-          width: '100%', background: 'var(--surf)', border: '1px solid var(--div)',
-          borderRadius: 4, color: 'var(--t1)',
-          fontFamily: 'Georgia, serif', fontSize: 14, lineHeight: 1.55,
-          padding: '12px 14px', resize: 'none', height: 88, outline: 'none',
-          transition: 'border-color .13s'
-        }}
-        onFocus={e => (e.currentTarget.style.borderColor = 'rgba(255,45,135,.35)')}
-        onBlur={e => (e.currentTarget.style.borderColor = 'var(--div)')}
-      />
+      {isExtend ? (
+        <div>
+          {/* Locked prefix */}
+          <div style={{
+            background: 'rgba(0,229,255,.03)',
+            border: '1px solid rgba(0,229,255,.14)',
+            borderLeft: '2px solid rgba(0,229,255,.28)',
+            borderBottom: 'none',
+            borderRadius: '4px 4px 0 0',
+            padding: '11px 14px',
+            fontFamily: 'Georgia, serif', fontSize: 14, fontStyle: 'italic',
+            lineHeight: 1.55, color: 'var(--t3)',
+            userSelect: 'none', cursor: 'default',
+            position: 'relative',
+          }}>
+            <span style={{
+              position: 'absolute', top: 6, right: 10,
+              fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase',
+              color: 'rgba(0,229,255,.3)',
+            }}>locked</span>
+            {currentPrompt}
+          </div>
+          {/* Extension input */}
+          <textarea
+            value={extension}
+            onChange={e => setExtension(e.target.value)}
+            rows={2}
+            required
+            maxLength={extMaxLen}
+            placeholder="…continue the prompt"
+            autoFocus
+            style={{
+              width: '100%', background: 'var(--surf)',
+              border: '1px solid rgba(0,229,255,.14)',
+              borderLeft: '2px solid rgba(0,229,255,.28)',
+              borderRadius: '0 0 4px 4px',
+              color: 'var(--t1)',
+              fontFamily: 'Georgia, serif', fontSize: 14, lineHeight: 1.55,
+              padding: '11px 14px', resize: 'none', outline: 'none',
+              transition: 'border-color .13s',
+            }}
+            onFocus={e => {
+              e.currentTarget.style.borderColor = 'rgba(0,229,255,.45)'
+              e.currentTarget.style.borderLeftColor = 'rgba(0,229,255,.45)'
+            }}
+            onBlur={e => {
+              e.currentTarget.style.borderColor = 'rgba(0,229,255,.14)'
+              e.currentTarget.style.borderLeftColor = 'rgba(0,229,255,.28)'
+            }}
+          />
+        </div>
+      ) : (
+        <textarea
+          value={prompt}
+          onChange={e => setPrompt(e.target.value)}
+          rows={3}
+          required
+          maxLength={250}
+          placeholder="Write your mutation of the prompt…"
+          style={{
+            width: '100%', background: 'var(--surf)', border: '1px solid var(--div)',
+            borderRadius: 4, color: 'var(--t1)',
+            fontFamily: 'Georgia, serif', fontSize: 14, lineHeight: 1.55,
+            padding: '12px 14px', resize: 'none', height: 88, outline: 'none',
+            transition: 'border-color .13s'
+          }}
+          onFocus={e => (e.currentTarget.style.borderColor = 'rgba(255,45,135,.35)')}
+          onBlur={e => (e.currentTarget.style.borderColor = 'var(--div)')}
+        />
+      )}
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
         <span style={{ fontSize: 10, color: 'var(--t4)', fontVariantNumeric: 'tabular-nums' }}>
-          {prompt.length} / 250
+          {charCount} / 250
         </span>
         <input
           value={name}
@@ -167,13 +231,13 @@ export default function SubmitForm({
         />
         <button
           type="submit"
-          disabled={loading || !prompt.trim()}
+          disabled={loading || !canSubmit}
           style={{
             fontFamily: 'inherit', fontSize: 10, textTransform: 'uppercase', letterSpacing: '.1em',
             color: 'var(--pink)', border: '1px solid var(--pT3)', background: 'none',
             borderRadius: 4, padding: '9px 18px', cursor: 'pointer',
             transition: 'background .13s', flexShrink: 0,
-            opacity: loading || !prompt.trim() ? .4 : 1
+            opacity: loading || !canSubmit ? .4 : 1
           }}
         >
           {loading ? '…' : '[submit mutation]'}
