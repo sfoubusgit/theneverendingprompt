@@ -50,10 +50,14 @@ export default function HomeClient({
   const [panel, setPanel] = useState<Panel>({ type: 'active' })
   const [submissions, setSubmissions] = useState<Submission[]>(initialSubs)
 
+  const TOP_N = 10
   const roundLabel = `ROUND_${String(roundNumber).padStart(3, '0')}`
   const isOpen = round.status === 'open'
   const totalVotes = submissions.reduce((a, s) => a + (s.vote_count ?? 0), 0)
   const sidebarChain = chainRounds.slice(0, 6)
+  const topSubs = [...submissions]
+    .sort((a, b) => (b.vote_count ?? 0) - (a.vote_count ?? 0))
+    .slice(0, TOP_N)
 
   return (
     <>
@@ -288,12 +292,27 @@ export default function HomeClient({
 
               {/* Vote section */}
               <VoteSection
-                submissions={submissions}
+                submissions={topSubs}
+                totalCount={submissions.length}
                 roundId={round.id}
                 closed={round.status === 'closed'}
                 winnerId={round.winner_submission_id}
                 roundNum={roundNumber}
               />
+
+              {/* See all link */}
+              {submissions.length > TOP_N && (
+                <a
+                  href={`/round/${round.id}`}
+                  style={{
+                    display: 'inline-block', marginBottom: 20,
+                    fontSize: 10, textTransform: 'uppercase', letterSpacing: '.12em',
+                    color: 'var(--t3)', textDecoration: 'none', transition: 'color .12s'
+                  }}
+                >
+                  // see all {submissions.length} mutations →
+                </a>
+              )}
 
               {/* Submit form */}
               {round.status === 'open' && (

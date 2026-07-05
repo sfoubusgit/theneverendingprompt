@@ -45,12 +45,14 @@ export default function VoteSection({
   closed,
   winnerId,
   roundNum,
+  totalCount,
 }: {
   submissions: Submission[]
   roundId: string
   closed: boolean
   winnerId: string | null
   roundNum?: number
+  totalCount?: number
 }) {
   const [myVote, setMyVote] = useState<string | null>(null)
   const [counts, setCounts] = useState<Record<string, number>>(
@@ -128,7 +130,10 @@ export default function VoteSection({
         <span>// how should it evolve?</span>
         <div style={{ flex: 1, height: 1, background: 'var(--div)' }} />
         <span style={{ color: 'var(--t3)' }}>
-          {submissions.length} option{submissions.length !== 1 ? 's' : ''} · {totalVotes} votes
+          {totalCount && totalCount > submissions.length
+            ? `top ${submissions.length} of ${totalCount}`
+            : `${submissions.length} option${submissions.length !== 1 ? 's' : ''}`
+          } · {totalVotes} votes
         </span>
       </div>
 
