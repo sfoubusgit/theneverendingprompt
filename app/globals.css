@@ -68,3 +68,13 @@ body {
   animation: cur 1s step-end infinite;
   color: var(--cyan);
 }
+
+.footer-link {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--t4);
+  text-decoration: none;
+  transition: color .12s;
+}
+.footer-link:hover { color: var(--t2); }

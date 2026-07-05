@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "TNEP.XYZ — The Never Ending Prompt",
@@ -17,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1 }}>{children}</div>
+        <Footer />
+      </body>
     </html>
   );
 }
