@@ -17,7 +17,7 @@ export default function SubmitForm({
   currentPrompt: string
   onSubmitted: (submission: Submission) => void
 }) {
-  const [prompt, setPrompt] = useState('')
+  const [prompt, setPrompt] = useState(currentPrompt)
   const [name, setName] = useState('')
   const [mutationType, setMutationType] = useState<'mutate' | 'extend'>('mutate')
   const [loading, setLoading] = useState(false)
