@@ -24,6 +24,7 @@ export default function SubmitForm({
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [submittedText, setSubmittedText] = useState('')
+  const [submittedId, setSubmittedId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const isExtend = mutationType === 'extend'
@@ -68,6 +69,7 @@ export default function SubmitForm({
     }
 
     setSubmittedText(finalPrompt)
+    if (data.id) setSubmittedId(data.id)
     onSubmitted({ ...data, vote_count: 0 })
     setDone(true)
     setLoading(false)
@@ -85,10 +87,7 @@ export default function SubmitForm({
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
           <span style={{ color: 'var(--lamp)' }}>✓</span>
           <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--lamp)' }}>
-            mutation queued
-          </span>
-          <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--t4)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
-            scroll up to vote
+            mutation live
           </span>
         </div>
         <div style={{
@@ -98,11 +97,20 @@ export default function SubmitForm({
         }}>
           "{submittedText}"
         </div>
-        <p style={{ fontSize: 11, color: 'var(--t3)', marginBottom: 12 }}>
-          Reviewed before next round opens.
-        </p>
+        {submittedId && (
+          <a
+            href={`/s/${submittedId}`}
+            style={{
+              display: 'inline-block', fontSize: 10,
+              textTransform: 'uppercase', letterSpacing: '.1em',
+              color: 'var(--cyan)', textDecoration: 'none', marginBottom: 12
+            }}
+          >
+            [share this mutation →]
+          </a>
+        )}
         <button
-          onClick={() => { setDone(false); setPrompt(currentPrompt); setExtension(''); setError(null) }}
+          onClick={() => { setDone(false); setSubmittedId(null); setPrompt(currentPrompt); setExtension(''); setError(null) }}
           style={{
             fontFamily: 'inherit', fontSize: 10, textTransform: 'uppercase', letterSpacing: '.1em',
             color: 'var(--t4)', background: 'none', border: 'none', cursor: 'pointer',

@@ -58,14 +58,24 @@ export async function GET(request: Request) {
 
   if (!round) return NextResponse.json({ message: 'No open round to close' })
 
-  // Get submissions with vote counts
+  // Compute round number for announcement copy
+  const { count: roundNumber } = await supabaseAdmin
+    .from('rounds')
+    .select('*', { count: 'exact', head: true })
+    .lte('created_at', round.created_at)
+
+  // Get submissions with vote counts AND submitter info needed for announcements
   const { data: submissions } = await supabaseAdmin
     .from('submissions')
-    .select('id, prompt, votes(count)')
+    .select('id, prompt, submitter_name, mutation_type, votes(count)')
     .eq('round_id', round.id)
+    .order('created_at', { ascending: true })
 
   let winnerId: string
   let winnerPrompt: string
+  let winnerName: string
+  let winnerMutationType: string | null = null
+  let winnerVotes: number = 0
   let aiGenerated = false
 
   if (!submissions || submissions.length === 0) {
@@ -99,7 +109,7 @@ export async function GET(request: Request) {
     }
 
     // Cast a synthetic vote so it shows up with a count
-    await supabaseAdmin.from('votes').insert({
+    const { error: voteErr } = await supabaseAdmin.from('votes').insert({
       round_id: round.id,
       submission_id: aiSub.id,
       voter_id: AI_VOTER_ID,
@@ -107,18 +117,29 @@ export async function GET(request: Request) {
 
     winnerId = aiSub.id
     winnerPrompt = aiPrompt
+    winnerName = 'TNEP_AI'
+    winnerMutationType = 'extend'
+    winnerVotes = voteErr ? 0 : 1
   } else {
-    // Human submissions exist — pick the one with most votes (first as tiebreaker)
-    const winner = (submissions as { id: string; prompt: string; votes: { count: number }[] }[]).reduce(
-      (best, s) => {
-        const count = s.votes?.[0]?.count ?? 0
-        const bestCount = best.votes?.[0]?.count ?? 0
-        return count > bestCount ? s : best
-      }
-    )
+    // Human submissions exist — pick the one with most votes (first submitted wins ties)
+    type SubRow = {
+      id: string
+      prompt: string
+      submitter_name: string
+      mutation_type: string | null
+      votes: { count: number }[]
+    }
+    const winner = (submissions as SubRow[]).reduce((best, s) => {
+      const count = s.votes?.[0]?.count ?? 0
+      const bestCount = best.votes?.[0]?.count ?? 0
+      return count > bestCount ? s : best
+    })
 
     winnerId = winner.id
     winnerPrompt = winner.prompt
+    winnerName = winner.submitter_name
+    winnerMutationType = winner.mutation_type ?? null
+    winnerVotes = winner.votes?.[0]?.count ?? 0
   }
 
   // Close current round
@@ -142,9 +163,65 @@ export async function GET(request: Request) {
 
   if (openErr) return NextResponse.json({ error: openErr.message }, { status: 500 })
 
+  // ── Discord announcement ──────────────────────────────────────────────────
+  // Set DISCORD_WEBHOOK_URL in Vercel env vars. Obtain by:
+  // Discord server -> channel settings -> Integrations -> Webhooks -> New Webhook -> Copy URL
+  const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL
+  if (discordWebhookUrl) {
+    const totalVotes = (submissions ?? []).reduce(
+      (sum, s) => sum + ((s as any).votes?.[0]?.count ?? 0),
+      0
+    )
+    const nextRoundNum = (roundNumber ?? 0) + 1
+
+    const embed = {
+      // Cyan (0x00e5ff) for AI rounds, pink (0xff2d87) for human wins
+      color: aiGenerated ? 0x00e5ff : 0xff2d87,
+      title: aiGenerated
+        ? `Round ${roundNumber}: no one played. The AI wrote that.`
+        : `Round ${roundNumber} won by ${winnerName}`,
+      description: `*"${winnerPrompt}"*`,
+      fields: [
+        {
+          name: 'mutation type',
+          value: winnerMutationType ?? 'unknown',
+          inline: true,
+        },
+        {
+          name: aiGenerated ? 'synthetic vote' : 'winning votes',
+          value: `${winnerVotes} of ${Math.max(totalVotes, winnerVotes)} cast`,
+          inline: true,
+        },
+        {
+          name: `round ${nextRoundNum} is live`,
+          value: `https://tnep.xyz/round/${newRound.id}`,
+          inline: false,
+        },
+      ],
+      footer: {
+        text: aiGenerated
+          ? 'No one played yesterday. The AI wrote that.'
+          : 'The prompt never dies.',
+      },
+      timestamp: new Date().toISOString(),
+    }
+
+    // Non-fatal: Discord outage must not block the cron response
+    await fetch(discordWebhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] }),
+    }).catch(() => {})
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   return NextResponse.json({
     closed: round.id,
+    round_number: roundNumber,
     winner: winnerPrompt,
+    winner_name: winnerName,
+    winner_mutation_type: winnerMutationType,
+    winner_votes: winnerVotes,
     opened: newRound.id,
     aiGenerated,
   })

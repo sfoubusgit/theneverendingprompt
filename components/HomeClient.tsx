@@ -290,6 +290,25 @@ export default function HomeClient({
                 />
               )}
 
+              {/* Submit form — above vote section so it's reachable without scrolling */}
+              {round.status === 'open' && (
+                <>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    fontSize: 9, textTransform: 'uppercase', letterSpacing: '.14em', color: 'var(--t4)',
+                    padding: '14px 0 10px', borderTop: '1px solid var(--div)'
+                  }}>
+                    <span>// write your own mutation</span>
+                    <div style={{ flex: 1, height: 1, background: 'var(--div)' }} />
+                  </div>
+                  <SubmitForm
+                    roundId={round.id}
+                    currentPrompt={round.prompt}
+                    onSubmitted={s => setSubmissions(prev => [...prev, s])}
+                  />
+                </>
+              )}
+
               {/* Vote section */}
               <VoteSection
                 submissions={topSubs}
@@ -312,25 +331,6 @@ export default function HomeClient({
                 >
                   // see all {submissions.length} mutations →
                 </a>
-              )}
-
-              {/* Submit form */}
-              {round.status === 'open' && (
-                <>
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    fontSize: 9, textTransform: 'uppercase', letterSpacing: '.14em', color: 'var(--t4)',
-                    padding: '14px 0 10px', borderTop: '1px solid var(--div)'
-                  }}>
-                    <span>// write your own mutation</span>
-                    <div style={{ flex: 1, height: 1, background: 'var(--div)' }} />
-                  </div>
-                  <SubmitForm
-                    roundId={round.id}
-                    currentPrompt={round.prompt}
-                    onSubmitted={s => setSubmissions(prev => [...prev, s])}
-                  />
-                </>
               )}
 
               {/* Mobile chain pills */}

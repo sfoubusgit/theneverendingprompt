@@ -94,6 +94,20 @@ export default function YesterdayStrip({
             {winnerLabel}
           </span>
         )}
+        {/* Winner name in collapsed header — makes "you won" discoverable on return */}
+        {winner && winner.submitter_name && winner.submitter_name !== 'TNEP_AI' && (
+          <span style={{ color: 'var(--t2)', fontSize: 10 }}>
+            {winner.submitter_name}
+          </span>
+        )}
+        {winner && winner.submitter_name === 'TNEP_AI' && (
+          <span style={{
+            color: 'var(--cyan)', border: '1px solid var(--cT3)', background: 'var(--cT1)',
+            padding: '1px 6px', borderRadius: 2, fontSize: 8, letterSpacing: '.06em'
+          }}>
+            ai
+          </span>
+        )}
         {winnerPct > 0 && (
           <span style={{ fontVariantNumeric: 'tabular-nums' }}>{winnerPct}%</span>
         )}
@@ -120,9 +134,21 @@ export default function YesterdayStrip({
                 <span style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '.07em', color: 'var(--t4)', width: 28, flexShrink: 0 }}>
                   {roundNumStr}
                 </span>
-                <span style={{ fontFamily: 'Georgia, serif', fontSize: 13, lineHeight: 1.45, color: 'rgba(240,240,240,.78)' }}>
-                  {winner.prompt}
-                </span>
+                <div>
+                  <span style={{ fontFamily: 'Georgia, serif', fontSize: 13, lineHeight: 1.45, color: 'rgba(240,240,240,.78)' }}>
+                    {winner.prompt}
+                  </span>
+                  {winner.submitter_name && winner.submitter_name !== 'TNEP_AI' && (
+                    <div style={{ fontSize: 9, color: 'var(--t4)', marginTop: 5, letterSpacing: '.06em' }}>
+                      — {winner.submitter_name}
+                    </div>
+                  )}
+                  {winner.submitter_name === 'TNEP_AI' && (
+                    <div style={{ fontSize: 9, color: 'var(--cyan)', marginTop: 5, letterSpacing: '.06em', opacity: .7 }}>
+                      — TNEP_AI (no one played)
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}

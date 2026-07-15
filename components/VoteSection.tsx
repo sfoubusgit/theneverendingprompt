@@ -78,16 +78,27 @@ export default function VoteSection({
     const voterId = getVoterId()
     const sub = submissions.find(s => s.id === submissionId) ?? null
 
+    const prevMyVote = myVote
+    const prevVotedSub = votedSub
+    const prevCounts = counts
+
     setMyVote(submissionId)
     setVotedSub(sub)
     setCounts(c => ({ ...c, [submissionId]: (c[submissionId] ?? 0) + 1 }))
 
     setVoting(true)
-    await fetch('/api/votes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ round_id: roundId, submission_id: submissionId, voter_id: voterId }),
-    })
+    try {
+      const res = await fetch('/api/votes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ round_id: roundId, submission_id: submissionId, voter_id: voterId }),
+      })
+      if (!res.ok) throw new Error('Vote rejected')
+    } catch {
+      setMyVote(prevMyVote)
+      setVotedSub(prevVotedSub)
+      setCounts(prevCounts)
+    }
     setVoting(false)
   }
 
@@ -151,6 +162,7 @@ export default function VoteSection({
           const isDimmed = !!myVote && !isMyVote && !closed && !isWinner
           const isLeader = !myVote && !closed && s.id === leaderId && totalVotes > 0
           const ts = typeStyle(s.mutation_type, isMyVote || isWinner)
+          const isAI = s.submitter_name === 'TNEP_AI'
 
           return (
             <div
@@ -178,6 +190,16 @@ export default function VoteSection({
                     color: ts.tagColor, borderColor: ts.tagBorder, background: ts.tagBg
                   }}>
                     {s.mutation_type}
+                  </span>
+                )}
+                {isAI && (
+                  <span style={{
+                    fontSize: 8, textTransform: 'uppercase', letterSpacing: '.12em',
+                    padding: '2px 5px', borderRadius: 2, flexShrink: 0,
+                    border: '1px solid rgba(240,240,240,.12)',
+                    color: 'var(--t4)', background: 'rgba(240,240,240,.04)',
+                  }}>
+                    ai
                   </span>
                 )}
                 {isLeader && (
@@ -214,7 +236,7 @@ export default function VoteSection({
                 "{s.prompt}"
               </div>
 
-              {s.submitter_name && (
+              {s.submitter_name && !isAI && (
                 <div style={{ fontSize: 9, color: 'var(--t4)', padding: '4px 14px 0', textTransform: 'uppercase', letterSpacing: '.08em' }}>
                   — {s.submitter_name}
                 </div>
