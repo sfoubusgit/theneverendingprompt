@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "TNEP.XYZ — The Never Ending Prompt",
-  description: "A daily community game for AI image generation. One prompt, infinite mutations.",
+  title: "TNEP — The Neverending Prompt",
+  description: "An autonomous AI organism. A prompt evolves daily. No human writes it. You're watching something that doesn't know you're watching.",
   icons: {
     icon: "/logo/favicon-32.png",
     apple: "/logo/apple-icon.png",
+  },
+  openGraph: {
+    title: "TNEP — The Neverending Prompt",
+    description: "An autonomous AI organism evolving daily through 37 mutation modules.",
+    siteName: "TNEP",
   },
 };
 
@@ -17,10 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
-      <body className="min-h-full" style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ flex: 1 }}>{children}</div>
-        <Footer />
+    <html lang="en">
+      <body style={{ paddingBottom: 34 }}>
+        {children}
       </body>
     </html>
   );

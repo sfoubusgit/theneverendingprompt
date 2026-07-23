@@ -1,74 +1,125 @@
 @import "tailwindcss";
 
-:root {
-  --bg: #050508;
-  --surf: #0b0a10;
-  --warm: #08070c;
-  --t1: #f0f0f0;
-  --t2: rgba(240,240,240,.62);
-  --t3: rgba(240,240,240,.36);
-  --t4: rgba(240,240,240,.17);
-  --t5: rgba(240,240,240,.07);
-  --div: rgba(240,240,240,.08);
-  --divC: rgba(0,229,255,.11);
-  --cyan: #00e5ff;
-  --pink: #ff2d87;
-  --lamp: #facc15;
-  --amber: #d4c9b2;
-  --cT1: rgba(0,229,255,.08);
-  --cT3: rgba(0,229,255,.38);
-  --cT4: rgba(0,229,255,.55);
-  --pT1: rgba(255,45,135,.08);
-  --pT3: rgba(255,45,135,.38);
-  --pT4: rgba(255,45,135,.55);
-  --lT1: rgba(250,204,21,.07);
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 
-html { background: var(--bg); }
+html {
+  background: #000;
+  scroll-behavior: smooth;
+}
 
 body {
-  background: var(--bg);
-  color: var(--t1);
-  font-family: 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  background: #000;
+  color: rgba(243, 243, 240, 0.92);
   font-size: 13px;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(10, 238, 255, 0.16);
+  color: #fff;
+}
+
+/* ── Focus ── */
+:focus-visible {
+  outline: 1px solid rgba(10, 238, 255, 0.55);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ── Preload text ── */
+.pl-text {
+  opacity: 0;
+  animation: pl-in 0.35s ease 0.04s forwards, pl-fade 0.30s ease 0.72s forwards;
+}
+@keyframes pl-in   { to { opacity: 1; } }
+@keyframes pl-fade { to { opacity: 0; } }
+
+/* ── Scroll invite ── */
+@keyframes invite-pulse {
+  0%, 100% { opacity: 0.25; }
+  50%       { opacity: 0.80; }
+}
+#scroll-invite {
+  animation: invite-pulse 2.8s ease-in-out infinite;
+  transition: opacity 0.9s ease;
+}
+
+/* ── Palimpsest ── */
+.obs-receding {
+  opacity: 0.14 !important;
+  transition: opacity 0.5s ease !important;
+}
+
+/* ── Word-by-word prompt reveal ── */
+@keyframes word-rise {
+  from {
+    opacity: 0;
+    transform: translateY(11px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Nav link hover ── */
+nav a {
+  transition: color 0.14s ease;
+}
+nav a:hover {
+  color: #0AEEFF !important;
+}
+
+/* ── Zone 1 Instagram CTA hover ── */
+.z1-ig-cta:hover {
+  color: rgba(10,238,255,1) !important;
+  border-color: rgba(10,238,255,0.55) !important;
+}
+
+/* ── Legacy utilities ── */
+:root {
+  --bg:   #020608;
+  --warm: #0a0700;
+  --t1:   rgba(243,243,240,0.94);
+  --t2:   rgba(243,243,240,0.64);
+  --t3:   rgba(243,243,240,0.38);
+  --t4:   rgba(243,243,240,0.18);
+  --t5:   rgba(243,243,240,0.07);
+  --cyan: #0AEEFF;
+  --pink: #FF2080;
+  --lamp: #facc15;
 }
 
 @keyframes lamp {
   0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(250,204,21,.9); }
-  50% { opacity: .45; box-shadow: 0 0 3px rgba(250,204,21,.4); }
+  50%       { opacity: .45; box-shadow: 0 0 3px rgba(250,204,21,.4); }
 }
 @keyframes cur {
-  0%, 49% { opacity: 1; }
+  0%, 49%   { opacity: 1; }
   50%, 100% { opacity: 0; }
 }
 @keyframes rise {
   from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes slidedown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: none; }
+  to   { opacity: 1; transform: none; }
 }
 
 .lamp-dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: var(--lamp);
   flex-shrink: 0;
   animation: lamp 2.2s ease-in-out infinite;
 }
-
 .cursor::after {
   content: '█';
   animation: cur 1s step-end infinite;
   color: var(--cyan);
 }
-
 .footer-link {
   font-size: 10px;
   letter-spacing: .1em;
@@ -78,3 +129,38 @@ body {
   transition: color .12s;
 }
 .footer-link:hover { color: var(--t2); }
+
+/* ── Mobile: nav centre label ── */
+@media (max-width: 600px) {
+  .nav-center { display: none !important; }
+}
+
+/* ── Mobile: Zone 1 prompt layout ── */
+@media (max-width: 640px) {
+  .z1-prompt-wrap {
+    left: 22px !important;
+    right: 22px !important;
+    bottom: 56px !important;
+  }
+  .z1-meta {
+    left: 22px !important;
+  }
+}
+
+/* ── Reduced-motion: keep basic layout, remove transforms ── */
+@media (prefers-reduced-motion: reduce) {
+  .pl-text,
+  #scroll-invite,
+  .obs-receding {
+    animation: none !important;
+    transition: none !important;
+  }
+  /* word-rise still runs, but reduced-motion canvas birth = instant */
+}
+
+/* ── Screen-reader utility ── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
