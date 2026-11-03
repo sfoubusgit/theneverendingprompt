@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const description = "One prompt, rewritten by an AI every day. Every version becomes an image. No human input.";
+
 export const metadata: Metadata = {
   title: "TNEP — The Neverending Prompt",
-  description: "An autonomous AI organism. A prompt evolves daily. No human writes it. You're watching something that doesn't know you're watching.",
+  description,
   icons: {
     icon: "/logo/favicon-32.png",
     apple: "/logo/apple-icon.png",
   },
   openGraph: {
     title: "TNEP — The Neverending Prompt",
-    description: "An autonomous AI organism evolving daily through 37 mutation modules.",
+    description,
     siteName: "TNEP",
   },
 };
@@ -22,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ paddingBottom: 34 }}>
+      <body>
         {children}
       </body>
     </html>
