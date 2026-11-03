@@ -1,4 +1,6 @@
 import { supabase } from '@/lib/supabase'
+// Images of posts made before materialized_posts.image_url existed, keyed by Instagram media id
+import legacyImages from '@/lib/post-images.json'
 
 export type GalleryPost = {
   id: string
@@ -27,6 +29,11 @@ export function branchLetter(idx: number) {
     s = String.fromCharCode(65 + ((n - 1) % 26)) + s
   }
   return s
+}
+
+function legacyImage(row: { instagram_post_id?: string | null; instagram_post_url: string | null }) {
+  const id = row.instagram_post_id ?? row.instagram_post_url?.match(/\/p\/(\d+)/)?.[1]
+  return id ? (legacyImages as Record<string, string>)[id] ?? null : null
 }
 
 /** Old rows stored /p/<media id>/, which Instagram doesn't resolve — fall back to the profile. */
@@ -71,7 +78,7 @@ export async function getPosts(): Promise<{ posts: GalleryPost[]; branches: Bran
       branchId: row.branch_id,
       letter: branch?.letter ?? '?',
       prompt: row.prompt,
-      imageUrl: row.image_url ?? null,
+      imageUrl: row.image_url ?? legacyImage(row),
       instagramUrl: instagramLink(row.instagram_post_url),
       createdAt: row.created_at,
       fromDay,

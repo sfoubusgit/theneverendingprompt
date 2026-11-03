@@ -13,6 +13,7 @@ const ROW    = 76   // px per branch
 const THUMB  = 32
 const GUTTER = 24   // left/right breathing room inside the scroll area
 const AXIS   = 36
+const TOP    = 40   // room for the NOW label above the rows
 
 export default function TreeView({ posts, branches }: { posts: GalleryPost[]; branches: BranchInfo[] }) {
   // posts arrive oldest first; the viewer wants newest first
@@ -23,11 +24,12 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
   const focus = hash.match(/^#branch-([A-Z]+)$/)?.[1] ?? null
 
   const days   = posts.length
-  const width  = GUTTER * 2 + Math.max(days, 1) * COL
-  const height = branches.length * ROW + AXIS
+  const width  = GUTTER * 3 + Math.max(days, 1) * COL   // extra right room for the latest node's glow
+  const height = TOP + branches.length * ROW + AXIS
   const x = (day: number) => GUTTER + (day - 0.5) * COL
-  const y = (row: number) => row * ROW + ROW / 2
+  const y = (row: number) => TOP + row * ROW + ROW / 2
   const rowOf = new Map(branches.map((b, i) => [b.id, i]))
+  const latest = posts.at(-1)
 
   // Newest days are on the right — start there
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
             <button
               key={b.id}
               className="t-label"
-              style={{ top: i * ROW, height: ROW, color: COLORS[i % COLORS.length] }}
+              style={{ top: TOP + i * ROW, height: ROW, color: COLORS[i % COLORS.length] }}
               aria-pressed={focus === b.letter}
               onClick={() => setHash(focus === b.letter ? '' : `#branch-${b.letter}`)}
             >
@@ -69,7 +71,7 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
                 return (
                   <g key={b.id} opacity={dim}>
                     {focus === b.letter && (
-                      <rect x={0} y={i * ROW + 4} width={width} height={ROW - 8} fill={color} opacity={0.05} />
+                      <rect x={0} y={TOP + i * ROW + 4} width={width} height={ROW - 8} fill={color} opacity={0.05} />
                     )}
                     {parentRow !== undefined && (
                       <path
@@ -85,6 +87,23 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
                   </g>
                 )
               })}
+
+              {/* Today: dashed line through every row + label on top */}
+              {latest && (
+                <g>
+                  <line
+                    x1={x(latest.day)} y1={TOP - 8} x2={x(latest.day)} y2={height - AXIS + 4}
+                    stroke="#00e5ff" strokeWidth={1} strokeDasharray="3 5" opacity={0.6}
+                  />
+                  <text
+                    x={x(latest.day) + 10} y={TOP - 16} textAnchor="end"
+                    fontFamily="Courier New, monospace" fontSize={11} fontWeight={700}
+                    letterSpacing={1.5} fill="#00e5ff"
+                  >
+                    NOW · DAY_{pad(latest.day)} · {latest.letter}
+                  </text>
+                </g>
+              )}
 
               {Array.from({ length: days }, (_, i) => i + 1)
                 .filter(d => d === 1 || d % 5 === 0 || d === days)
@@ -103,20 +122,20 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
               const row = rowOf.get(p.branchId)
               if (row === undefined) return null
               const color = COLORS[row % COLORS.length]
-              const latest = p.day === days
-              const size = latest ? THUMB + 10 : THUMB
+              const isLatest = p.day === days
+              const size = isLatest ? THUMB + 20 : THUMB
               return (
                 <button
                   key={p.id}
-                  className="t-node"
+                  className={isLatest ? 't-node t-node-latest' : 't-node'}
                   style={{
                     left: x(p.day) - size / 2, top: y(row) - size / 2,
                     width: size, height: size,
                     borderColor: color,
-                    opacity: focus && focus !== p.letter ? 0.2 : 1,
+                    opacity: focus && focus !== p.letter && !isLatest ? 0.2 : 1,
                   }}
                   onClick={() => viewer.showDay(p.day)}
-                  aria-label={`Day ${p.day}, branch ${p.letter}`}
+                  aria-label={`Day ${p.day}, branch ${p.letter}${isLatest ? ' — latest' : ''}`}
                   title={`DAY_${pad(p.day)} · ${p.letter}`}
                 >
                   {p.imageUrl
