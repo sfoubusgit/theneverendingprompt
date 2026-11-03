@@ -129,6 +129,33 @@ body {
 .g-tile:hover img, .g-tile:focus-visible img { opacity: 0.8; transform: scale(1.02); }
 .g-tile:hover .g-tile-label, .g-tile:focus-visible .g-tile-label { opacity: 1; }
 
+/* Newest post — same "now" language as the tree: cyan frame, glow, pulse, NOW label */
+.g-latest { position: relative; z-index: 1; }
+.g-latest .g-tile {
+  box-shadow: 0 0 0 1px rgba(0,229,255,0.65), 0 0 14px rgba(0,229,255,0.16);
+}
+.g-latest::after {
+  content: ''; position: absolute; inset: -3px;
+  border: 1px solid rgba(0,229,255,0.5);
+  pointer-events: none;
+  animation: g-pulse 3.2s ease-out infinite;
+}
+@keyframes g-pulse {
+  from { opacity: 0.45; transform: scale(1); }
+  to   { opacity: 0;    transform: scale(1.02); }
+}
+.g-tile-label.g-tile-label-now {
+  display: flex; align-items: center; gap: 7px;
+  opacity: 1; color: rgba(0,229,255,0.85);
+}
+.g-dot {
+  flex: none; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 5px rgba(255,45,135,0.5);
+  animation: g-blink 3s ease-in-out infinite;
+}
+@keyframes g-blink { 50% { opacity: 0.45; } }
+
 .g-text-tile {
   width: 100%; height: 100%;
   display: flex; flex-direction: column; gap: 10px;
@@ -295,6 +322,12 @@ body {
   .g-figure figcaption { padding: 14px 16px 0; }
 }
 
+@media (max-width: 640px) {
+  .g-tile-label.g-tile-label-now { padding: 22px 7px 6px; font-size: 9px; gap: 6px; letter-spacing: 0.08em; }
+  .g-latest::after { inset: -2px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .g-tile img { transition: none; }
+  .g-latest::after, .g-dot { animation: none; }
 }
