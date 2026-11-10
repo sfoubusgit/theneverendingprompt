@@ -43,7 +43,7 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
   return (
     <>
       <div className="t-wrap">
-        <div className="t-labels" style={{ height }}>
+        <div className="t-labels" style={{ height, flexBasis: branches.some(b => b.theme) ? 150 : undefined }}>
           {branches.map((b, i) => (
             <button
               key={b.id}
@@ -53,6 +53,7 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
               onClick={() => setHash(focus === b.letter ? '' : `#branch-${b.letter}`)}
             >
               <span className="t-label-letter">{b.letter}</span>
+              {b.theme && <span className="t-label-theme" title={b.theme}>{b.theme}</span>}
               <span className="t-label-status">{STATUS[b.status] ?? b.status}</span>
             </button>
           ))}
@@ -100,7 +101,7 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
                     fontFamily="Courier New, monospace" fontSize={11} fontWeight={700}
                     letterSpacing={1.5} fill="#00e5ff"
                   >
-                    NOW · DAY_{pad(latest.day)} · {latest.letter}
+                    NOW · DAY_{pad(latest.day)} · {latest.label}
                   </text>
                 </g>
               )}
@@ -135,8 +136,8 @@ export default function TreeView({ posts, branches }: { posts: GalleryPost[]; br
                     opacity: focus && focus !== p.letter && !isLatest ? 0.2 : 1,
                   }}
                   onClick={() => viewer.showDay(p.day)}
-                  aria-label={`Day ${p.day}, branch ${p.letter}${isLatest ? ' — latest' : ''}`}
-                  title={`DAY_${pad(p.day)} · ${p.letter}`}
+                  aria-label={`Day ${p.day}, branch ${p.label}${isLatest ? ' — latest' : ''}`}
+                  title={`DAY_${pad(p.day)} · ${p.label}`}
                 >
                   {p.imageUrl
                     ? <img src={sized(p.imageUrl, 120)} alt="" loading="lazy" />

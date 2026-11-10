@@ -16,14 +16,14 @@ export default function Gallery({ posts }: { posts: GalleryPost[] }) {
             <button
               className="g-tile"
               onClick={() => viewer.show(i)}
-              aria-label={`${i === 0 ? 'Latest — ' : ''}Day ${p.day}, branch ${p.letter}: ${p.prompt}`}
+              aria-label={`${i === 0 ? 'Latest — ' : ''}Day ${p.day}, branch ${p.label}: ${p.prompt}`}
             >
               {p.imageUrl
                 ? <img src={sized(p.imageUrl, 540)} alt="" loading={i < 9 ? 'eager' : 'lazy'} />
                 : <TextTile post={p} />}
               {i === 0
-                ? <span className="g-tile-label g-tile-label-now"><span className="g-dot" />NOW · DAY_{pad(p.day)} · {p.letter}</span>
-                : <span className="g-tile-label">DAY_{pad(p.day)} · {p.letter}</span>}
+                ? <span className="g-tile-label g-tile-label-now"><span className="g-dot" />NOW · DAY_{pad(p.day)} · {p.label}</span>
+                : <span className="g-tile-label">DAY_{pad(p.day)} · {p.label}</span>}
             </button>
           </li>
         ))}

@@ -7,6 +7,9 @@ export type GalleryPost = {
   day: number               // matches DAY_NNN on the Instagram post
   branchId: string
   letter: string            // A, B, ... — same lettering as the Instagram card
+  theme: string | null      // permanent theme of a themed branch
+  label: string             // "B" or "G · gothic apple pie universe"
+  planted: boolean          // first themed branch of its line (not inherited from the parent)
   prompt: string
   imageUrl: string | null
   instagramUrl: string | null
@@ -20,6 +23,7 @@ export type BranchInfo = {
   letter: string
   parentId: string | null
   status: string
+  theme: string | null
   splitDay: number          // posts that existed when the branch was created (0 for the root)
 }
 
@@ -29,6 +33,11 @@ export function branchLetter(idx: number) {
     s = String.fromCharCode(65 + ((n - 1) % 26)) + s
   }
   return s
+}
+
+export function branchLabel(b: { letter: string; theme: string | null } | undefined) {
+  if (!b) return '?'
+  return b.theme ? `${b.letter} · ${b.theme}` : b.letter
 }
 
 function legacyImage(row: { instagram_post_id?: string | null; instagram_post_url: string | null }) {
@@ -52,7 +61,7 @@ export async function getPosts(): Promise<{ posts: GalleryPost[]; branches: Bran
       .order('created_at', { ascending: true }),
     supabase
       .from('branches')
-      .select('id, parent_id, status, created_at')
+      .select('*')   // * — keeps working whether or not `theme` exists
       .order('created_at', { ascending: true }),
   ])
 
@@ -62,6 +71,7 @@ export async function getPosts(): Promise<{ posts: GalleryPost[]; branches: Bran
     letter: branchLetter(i),
     parentId: b.parent_id,
     status: b.status,
+    theme: b.theme ?? null,
     splitDay: b.parent_id ? postRows.filter(p => p.created_at < b.created_at).length : 0,
   }))
   const byId = new Map(branches.map(b => [b.id, b]))
@@ -77,6 +87,9 @@ export async function getPosts(): Promise<{ posts: GalleryPost[]; branches: Bran
       day,
       branchId: row.branch_id,
       letter: branch?.letter ?? '?',
+      theme: branch?.theme ?? null,
+      label: branchLabel(branch),
+      planted: !!branch?.theme && byId.get(branch.parentId ?? '')?.theme !== branch.theme,
       prompt: row.prompt,
       imageUrl: row.image_url ?? legacyImage(row),
       instagramUrl: instagramLink(row.instagram_post_url),

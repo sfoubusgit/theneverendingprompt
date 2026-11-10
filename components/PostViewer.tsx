@@ -9,6 +9,7 @@ export const pad = (n: number) => String(n).padStart(3, '0')
 
 function lineage(p: GalleryPost) {
   if (p.fromDay) return { text: `evolved from day ${p.fromDay}`, day: p.fromDay }
+  if (p.planted && p.splitFrom) return { text: `a new theme · grown out of branch ${p.splitFrom}`, day: null }
   if (p.splitFrom) return { text: `first post of branch ${p.letter} · split from branch ${p.splitFrom}`, day: null }
   return { text: `first post of branch ${p.letter}`, day: null }
 }
@@ -17,7 +18,7 @@ function lineage(p: GalleryPost) {
 export function TextTile({ post }: { post: GalleryPost }) {
   return (
     <div className="g-text-tile">
-      <span className="g-text-tile-day">DAY_{pad(post.day)} · {post.letter}</span>
+      <span className="g-text-tile-day">DAY_{pad(post.day)} · {post.label}</span>
       <p>{post.prompt}</p>
     </div>
   )
@@ -115,7 +116,7 @@ export default function PostViewer({ posts, open, show, showDay }: {
         )}
         <figcaption>
           <div className="g-meta">
-            <span className="g-meta-day">DAY_{pad(post.day)} · BRANCH {post.letter}</span>
+            <span className="g-meta-day">DAY_{pad(post.day)} · {(post.theme ? post.label : `branch ${post.letter}`).toUpperCase()}</span>
             <span className="g-meta-date">{post.createdAt.slice(0, 10).replaceAll('-', '.')}</span>
           </div>
           <p className="g-prompt">{post.prompt}</p>
