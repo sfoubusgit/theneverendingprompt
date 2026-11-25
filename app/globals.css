@@ -52,22 +52,20 @@ body {
 /* ── Header / footer ── */
 .site-header {
   position: sticky; top: 0; z-index: 50;
-  height: 52px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  /* content stays within 1200px on wide screens instead of drifting into the corners */
+  padding: 0 max(24px, calc((100% - 1200px) / 2));
   background: rgba(0,0,0,0.86);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--div);
   font-family: var(--mono);
 }
-.site-mark {
-  display: inline-flex; align-items: flex-end; gap: 10px;
-  font-size: 17px; font-weight: 700; letter-spacing: 0.14em; line-height: 1;
-  color: #f3f3f0; text-decoration: none;
-}
-.site-mark-svg { width: 24px; height: 24px; display: block; flex: none; }
-.site-mark span { margin-bottom: -2px; } /* baseline ≈ the mark's ground line */
-.site-header nav { display: flex; gap: 22px; }
+/* lockup height drives everything; width follows the SVG's 2708:686 ratio */
+.site-mark { --logo-h: 24px; display: block; flex: none; color: #f3f3f0; line-height: 0; }
+.site-mark-svg { display: block; height: var(--logo-h); width: calc(var(--logo-h) * 3.948); }
+.site-mark:hover { color: #fff; }
+.site-header nav { display: flex; align-items: center; gap: 22px; }
 .site-header nav a {
   font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--t3); text-decoration: none; transition: color .14s;
@@ -320,7 +318,8 @@ body {
 @media (max-width: 640px) {
   .t-wrap { padding: 0 0 0 16px; }
   .t-labels { flex-basis: 48px; }
-  .site-header { padding: 0 16px; }
+  .site-header { height: 52px; padding: 0 16px; }
+  .site-mark { --logo-h: 20px; }
   .site-header nav { gap: 16px; }
   .g-intro { padding: 36px 16px 28px; }
   .g-grid { padding: 0; gap: 2px; }
@@ -334,6 +333,12 @@ body {
 @media (max-width: 640px) {
   .g-tile-label.g-tile-label-now { padding: 22px 7px 6px; font-size: 9px; gap: 6px; letter-spacing: 0.08em; }
   .g-latest::after { inset: -2px; }
+}
+
+@media (max-width: 380px) {
+  .site-mark { --logo-h: 18px; }
+  .site-header nav { gap: 12px; }
+  .site-header nav a { font-size: 10px; letter-spacing: 0.08em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
