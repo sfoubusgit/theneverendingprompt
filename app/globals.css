@@ -61,10 +61,12 @@ body {
   font-family: var(--mono);
 }
 .site-mark {
-  font-size: 15px; font-weight: 700; letter-spacing: 0.14em;
-  color: #bebace; text-decoration: none;
+  display: inline-flex; align-items: flex-end; gap: 10px;
+  font-size: 17px; font-weight: 700; letter-spacing: 0.14em; line-height: 1;
+  color: #f3f3f0; text-decoration: none;
 }
-.site-mark-chev { color: var(--pink); margin-right: 2px; }
+.site-mark-svg { width: 24px; height: 24px; display: block; flex: none; }
+.site-mark span { margin-bottom: -2px; } /* baseline ≈ the mark's ground line */
 .site-header nav { display: flex; gap: 22px; }
 .site-header nav a {
   font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -111,11 +113,11 @@ body {
 }
 .g-tile {
   position: relative; display: block; width: 100%;
-  aspect-ratio: 1; padding: 0; border: 0;
-  background: var(--ink); cursor: pointer; overflow: hidden;
+  aspect-ratio: 4 / 5; padding: 0; border: 0;   /* posts are 4:5 since 2026-11-26; older squares sit centred */
+  background: var(--bg); cursor: pointer; overflow: hidden;
 }
 .g-tile img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: contain; display: block;
   transition: opacity .2s, transform .4s ease;
 }
 .g-tile-label {
@@ -186,11 +188,11 @@ body {
 }
 .g-figure {
   margin: auto 0;
-  width: min(100%, 72vh, 760px);
+  width: min(100%, 60vh, 640px);   /* 4:5 image + caption fit the screen */
   min-width: 0;
 }
 .g-prompt, .g-text-tile p { overflow-wrap: anywhere; }
-.g-figure-img { aspect-ratio: 1; background: var(--ink); }
+.g-figure-img { aspect-ratio: 4 / 5; background: var(--bg); }
 .g-figure-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .g-figure figcaption { padding: 16px 2px 0; }
 .g-meta {

@@ -6,10 +6,7 @@ const description = "One prompt, rewritten by an AI every day. Every version bec
 export const metadata: Metadata = {
   title: "TNEP — The Neverending Prompt",
   description,
-  icons: {
-    icon: "/logo/favicon-32.png",
-    apple: "/logo/apple-icon.png",
-  },
+  // icons: app/favicon.ico, app/icon.png, app/apple-icon.png (v4 logo)
   openGraph: {
     title: "TNEP — The Neverending Prompt",
     description,
